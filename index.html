@@ -11,11 +11,12 @@
     .nav-btn:hover { color: #064e3b; border-color: #064e3b; }
     .active-nav { color: #064e3b; border-color: #064e3b; font-weight: bold; }
     
-    /* Background & Floating Leaves */
+    /* ENHANCED BACKGROUND DESIGN */
     body { 
-      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); 
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%); 
       overflow-x: hidden;
       position: relative;
+      min-height: 100vh;
     }
 
     .leaf-container {
@@ -31,25 +32,37 @@
     .leaf {
       position: absolute;
       display: block;
-      width: 15px;
-      height: 15px;
+      width: 25px;
+      height: 25px;
       background: #13633d;
-      opacity: 0.1;
+      opacity: 0.3; /* Increased visibility */
       border-radius: 0 100% 0 100%;
-      animation: float 15s infinite linear;
+      animation: float 12s infinite linear;
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
     }
+
+    /* Depth of field effect */
+    .leaf:nth-child(even) { filter: blur(2px); opacity: 0.2; }
 
     @keyframes float {
       0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.15; }
-      90% { opacity: 0.15; }
-      100% { transform: translateY(110vh) translateX(100px) rotate(360deg); opacity: 0; }
+      15% { opacity: 0.3; }
+      85% { opacity: 0.3; }
+      100% { transform: translateY(110vh) translateX(150px) rotate(450deg); opacity: 0; }
     }
 
-    .leaf:nth-child(1) { left: 10%; animation-duration: 18s; animation-delay: 0s; }
-    .leaf:nth-child(2) { left: 35%; animation-duration: 22s; animation-delay: -5s; }
-    .leaf:nth-child(3) { left: 60%; animation-duration: 15s; animation-delay: -2s; }
-    .leaf:nth-child(4) { left: 85%; animation-duration: 25s; animation-delay: -8s; }
+    .leaf:nth-child(1) { left: 5%; animation-duration: 14s; animation-delay: 0s; }
+    .leaf:nth-child(2) { left: 25%; animation-duration: 18s; animation-delay: -3s; }
+    .leaf:nth-child(3) { left: 45%; animation-duration: 12s; animation-delay: -6s; }
+    .leaf:nth-child(4) { left: 65%; animation-duration: 20s; animation-delay: -2s; }
+    .leaf:nth-child(5) { left: 85%; animation-duration: 15s; animation-delay: -5s; }
+
+    /* Glassmorphism for better background visibility */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
 
     .content-wrapper { position: relative; z-index: 10; }
     .bg-bnhs-green { background-color: #13633d; }
@@ -57,49 +70,46 @@
     .border-bnhs-green { border-color: #13633d; }
   </style>
 </head>
-<body class="font-sans text-gray-800 min-h-screen">
+<body class="font-sans text-gray-800">
 
   <div class="leaf-container">
     <div class="leaf"></div>
+    <div class="leaf :nth-child(2)"></div>
     <div class="leaf"></div>
     <div class="leaf"></div>
     <div class="leaf"></div>
   </div>
 
   <div class="content-wrapper">
-    <nav class="bg-white/90 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
+    <nav class="bg-white/70 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
       <button onclick="showSection('request')" id="btn-request" class="nav-btn py-1 active-nav">Request</button>
       <button onclick="showSection('track')" id="btn-track" class="nav-btn py-1">Track Progress</button>
-      <button onclick="showSection('admin-login')" id="btn-admin" class="text-gray-400 text-[10px] mt-1 hover:text-gray-600 transition uppercase tracking-widest">Admin Access</button>
+      <button onclick="showSection('admin-login')" id="btn-admin" class="text-gray-500 text-[10px] mt-1 hover:text-gray-800 transition uppercase tracking-widest">Admin Access</button>
     </nav>
 
     <section id="request" class="max-w-2xl mx-auto py-12 px-4">
-      <div class="bg-white/95 rounded-3xl shadow-xl p-8 border-t-8 border-bnhs-green backdrop-blur-sm text-center">
+      <div class="glass-panel rounded-3xl shadow-2xl p-8 border-t-8 border-bnhs-green text-center">
         
         <div class="relative mx-auto w-36 h-36 mb-6">
-          <div class="absolute inset-0 bg-bnhs-green opacity-20 rounded-full blur-xl"></div>
+          <div class="absolute inset-0 bg-bnhs-green opacity-30 rounded-full blur-2xl"></div>
           <div class="relative w-full h-full bg-white rounded-full border-4 border-bnhs-green shadow-xl flex items-center justify-center overflow-hidden">
-            <img src="school-logo.jfif" alt="Bukal INHS Logo" class="w-4/5 h-4/5 object-contain">
+            <img src="261a53ce-5210-43ea-b265-f72beaa28d07.jfif" alt="Bukal INHS Logo" class="w-4/5 h-4/5 object-contain">
           </div>
         </div>
 
         <div class="mb-8">
           <h1 class="text-3xl font-black text-gray-900 tracking-tight">E-DocuQuest</h1>
           <p class="text-bnhs-green font-bold uppercase tracking-wider text-sm">Bukal Integrated National High School</p>
-          <div class="flex items-center justify-center gap-2 mt-2">
-            <span class="h-px w-8 bg-gray-200"></span>
-            <p class="text-gray-500 text-[10px] font-medium uppercase tracking-widest font-semibold">Padre Garcia, Batangas • Est. 1981</p>
-            <span class="h-px w-8 bg-gray-200"></span>
-          </div>
+          <p class="text-gray-500 text-[10px] mt-1 uppercase tracking-widest font-semibold">Padre Garcia, Batangas • Est. 1981</p>
         </div>
         
         <form id="requestForm" class="space-y-4 text-left">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
-            <input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
+            <input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
+            <input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
           </div>
-          <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-emerald-400 outline-none transition">
-          <select id="document" class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
+          <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition">
+          <select id="document" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
             <option value="">Select Document...</option>
             <option>Form 137 (Permanent Record)</option>
             <option>Form 138 (Report Card)</option>
@@ -107,22 +117,22 @@
             <option>Certificate of Graduation</option>
             <option>Request / Transfer Letter</option>
           </select>
-          <textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-gray-50 rounded-xl border focus:ring-2 focus:ring-emerald-400 outline-none transition" rows="3" required></textarea>
-          <button type="submit" id="submitBtn" class="w-full bg-bnhs-green text-white py-4 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg active:scale-95 transition-all">Submit Request</button>
+          <textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" rows="3" required></textarea>
+          <button type="submit" id="submitBtn" class="w-full bg-bnhs-green text-white py-4 rounded-xl font-bold text-lg hover:scale-[1.02] shadow-lg active:scale-95 transition-all">Submit Request</button>
         </form>
         <div id="requestFeedback" class="mt-6 text-left"></div>
       </div>
     </section>
 
     <section id="track" class="hidden-section max-w-xl mx-auto py-12 px-4">
-      <div class="bg-white/95 rounded-3xl shadow-xl p-8 text-center backdrop-blur-sm">
+      <div class="glass-panel rounded-3xl shadow-2xl p-8 text-center">
         <h2 class="text-2xl font-bold mb-2">Track Your Document</h2>
-        <p class="text-gray-500 mb-6 italic text-sm">Enter your Tracking ID below</p>
+        <p class="text-gray-600 mb-6 italic text-sm">Enter your Tracking ID below</p>
         
-        <input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 bg-gray-50 rounded-xl border mb-4 text-center font-mono text-xl uppercase tracking-widest outline-none focus:border-bnhs-green transition">
-        <button onclick="handleTrack()" id="trackBtn" class="w-full bg-bnhs-green text-white py-4 rounded-xl font-bold hover:brightness-110 shadow-md transition">Check Status</button>
+        <input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 mb-4 text-center font-mono text-xl uppercase tracking-widest outline-none focus:border-bnhs-green transition">
+        <button onclick="handleTrack()" id="trackBtn" class="w-full bg-bnhs-green text-white py-4 rounded-xl font-bold hover:scale-[1.02] shadow-md transition">Check Status</button>
         
-        <div id="trackDisplay" class="hidden-section mt-10 p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
+        <div id="trackDisplay" class="hidden-section mt-10 p-6 bg-emerald-50/80 rounded-2xl border border-emerald-100">
           <p id="trackHeaderMessage" class="text-sm font-bold text-emerald-900 mb-4 px-2 leading-tight"></p>
           <div class="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden">
             <div id="trackBar" class="bg-bnhs-green h-full transition-all duration-1000" style="width: 0%"></div>
@@ -134,22 +144,22 @@
     </section>
 
     <section id="admin-login" class="hidden-section max-w-sm mx-auto py-12 px-4">
-      <div class="bg-white p-8 rounded-2xl shadow-lg border">
+      <div class="glass-panel p-8 rounded-2xl shadow-lg border">
         <h2 class="text-xl font-bold mb-4 text-center">Admin Access</h2>
-        <input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3 outline-none focus:border-bnhs-green">
-        <input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded-lg mb-4 outline-none focus:border-bnhs-green">
-        <button onclick="handleAdminLogin()" id="loginBtn" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold hover:bg-black transition">Verify</button>
+        <input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3">
+        <input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded-lg mb-4">
+        <button onclick="handleAdminLogin()" id="loginBtn" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Verify</button>
       </div>
     </section>
 
     <section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
-      <div class="bg-white p-6 rounded-2xl shadow-2xl overflow-hidden">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+      <div class="glass-panel p-6 rounded-2xl shadow-2xl">
+         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
           <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
-          <button onclick="loadAdminData()" class="bg-emerald-100 text-emerald-700 p-2 px-4 rounded-lg font-bold">🔄 Refresh</button>
+          <button onclick="loadAdminData()" class="bg-bnhs-green text-white p-2 px-4 rounded-lg font-bold">🔄 Refresh</button>
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left border-collapse bg-white/50">
             <thead>
               <tr class="bg-bnhs-green text-white font-bold">
                 <th class="p-4">ID</th><th class="p-4">Student</th><th class="p-4">Document</th><th class="p-4 text-center">Status</th><th class="p-4 text-center">Update</th>
