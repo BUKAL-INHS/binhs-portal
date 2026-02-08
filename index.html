@@ -11,7 +11,6 @@
     .nav-btn:hover { color: #064e3b; border-color: #064e3b; }
     .active-nav { color: #064e3b; border-color: #064e3b; font-weight: bold; }
     
-    /* ENHANCED BACKGROUND DESIGN */
     body { 
       background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%); 
       overflow-x: hidden;
@@ -21,27 +20,19 @@
 
     .leaf-container {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none; 
-      z-index: 0;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
     }
 
     .leaf {
       position: absolute;
-      display: block;
-      width: 25px;
-      height: 25px;
+      width: 25px; height: 25px;
       background: #13633d;
       opacity: 0.3;
       border-radius: 0 100% 0 100%;
       animation: float 12s infinite linear;
       filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
     }
-
-    .leaf:nth-child(even) { filter: blur(2px); opacity: 0.2; }
 
     @keyframes float {
       0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
@@ -61,20 +52,12 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
-
-    .content-wrapper { position: relative; z-index: 10; }
-    .bg-bnhs-green { background-color: #13633d; }
-    .text-bnhs-green { color: #13633d; }
   </style>
 </head>
 <body class="font-sans text-gray-800">
 
   <div class="leaf-container">
-    <div class="leaf"></div>
-    <div class="leaf"></div>
-    <div class="leaf"></div>
-    <div class="leaf"></div>
-    <div class="leaf"></div>
+    <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
   </div>
 
   <div class="content-wrapper">
@@ -89,12 +72,11 @@
         
         <div class="relative mx-auto w-40 h-40 mb-6">
           <div class="absolute inset-0 bg-[#13633d] opacity-20 rounded-full blur-2xl scale-110"></div>
-          
           <div class="relative w-full h-full bg-white rounded-full border-4 border-white shadow-xl overflow-hidden flex items-center justify-center">
             <img 
               src="261a53ce-5210-43ea-b265-f72beaa28d07.jfif" 
               alt="Bukal INHS Logo" 
-              class="w-full h-full object-cover object-center scale-110"
+              class="w-[85%] h-[85%] object-contain scale-100"
             >
           </div>
         </div>
@@ -107,11 +89,11 @@
         
         <form id="requestForm" class="space-y-4 text-left">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
-            <input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
+            <input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" required>
+            <input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" required>
           </div>
-          <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition">
-          <select id="document" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" required>
+          <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none">
+          <select id="document" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" required>
             <option value="">Select Document...</option>
             <option>Form 137 (Permanent Record)</option>
             <option>Form 138 (Report Card)</option>
@@ -119,7 +101,7 @@
             <option>Certificate of Graduation</option>
             <option>Request / Transfer Letter</option>
           </select>
-          <textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-400 outline-none transition" rows="3" required></textarea>
+          <textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" rows="3" required></textarea>
           <button type="submit" id="submitBtn" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg active:scale-95 transition-all">Submit Request</button>
         </form>
         <div id="requestFeedback" class="mt-6 text-left"></div>
@@ -130,10 +112,8 @@
       <div class="glass-panel rounded-3xl shadow-2xl p-8 text-center">
         <h2 class="text-2xl font-bold mb-2">Track Your Document</h2>
         <p class="text-gray-600 mb-6 italic text-sm">Enter your Tracking ID below</p>
-        
         <input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 mb-4 text-center font-mono text-xl uppercase tracking-widest outline-none focus:border-[#13633d] transition">
         <button onclick="handleTrack()" id="trackBtn" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold hover:brightness-110 shadow-md transition">Check Status</button>
-        
         <div id="trackDisplay" class="hidden-section mt-10 p-6 bg-emerald-50/80 rounded-2xl border border-emerald-100">
           <p id="trackHeaderMessage" class="text-sm font-bold text-emerald-900 mb-4 px-2 leading-tight"></p>
           <div class="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden">
@@ -150,18 +130,18 @@
         <h2 class="text-xl font-bold mb-4 text-center">Admin Access</h2>
         <input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3">
         <input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded-lg mb-4">
-        <button onclick="handleAdminLogin()" id="loginBtn" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Verify</button>
+        <button onclick="handleAdminLogin()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Verify</button>
       </div>
     </section>
 
     <section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
       <div class="glass-panel p-6 rounded-2xl shadow-2xl">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-          <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Dashboard</h2>
           <button onclick="loadAdminData()" class="bg-[#13633d] text-white p-2 px-4 rounded-lg font-bold">🔄 Refresh</button>
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse bg-white/50">
+          <table class="w-full text-left bg-white/50">
             <thead>
               <tr class="bg-[#13633d] text-white font-bold">
                 <th class="p-4">ID</th><th class="p-4">Student</th><th class="p-4">Document</th><th class="p-4 text-center">Status</th><th class="p-4 text-center">Update</th>
@@ -189,23 +169,17 @@
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       const feedback = document.getElementById('requestFeedback');
-      btn.disabled = true;
-      btn.innerText = "Processing...";
+      btn.disabled = true; btn.innerText = "Processing...";
       const trackingId = "BNHS-" + Math.floor(10000 + Math.random() * 90000);
-      const payload = {
-        action: "submit",
-        trackingId: trackingId,
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        contact: document.getElementById('contact').value,
-        document: document.getElementById('document').value,
-        reason: document.getElementById('reason').value
-      };
       try {
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({
+          action: "submit", trackingId, name: document.getElementById('name').value,
+          email: document.getElementById('email').value, contact: document.getElementById('contact').value,
+          document: document.getElementById('document').value, reason: document.getElementById('reason').value
+        })});
         feedback.innerHTML = `<div class="bg-[#13633d] p-6 rounded-2xl text-white text-center shadow-lg"><p class="font-bold text-xs uppercase mb-1 tracking-widest">ID Recorded:</p><p class="text-4xl font-mono font-black my-2">${trackingId}</p></div>`;
         document.getElementById('requestForm').reset();
-      } catch (err) { alert("Error connecting to server."); }
+      } catch (err) { alert("Error connecting."); }
       btn.disabled = false; btn.innerText = "Submit Request";
     });
 
@@ -218,25 +192,14 @@
         const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "track", trackingId: id}) });
         const data = await res.json();
         if (data.status === "Not Found") { alert("ID not found."); btn.innerText = "Check Status"; return; }
-        
         document.getElementById('trackDisplay').classList.remove('hidden-section');
         document.getElementById('trackStatusText').innerText = data.status;
-        const header = document.getElementById('trackHeaderMessage');
-        const bar = document.getElementById('trackBar');
-        
-        if(data.status === "Processing") {
-          header.innerText = "Your document is being processed.";
-          bar.style.width = "40%";
-        } else if(data.status === "Ready for Pickup") {
-          header.innerText = "Your document is ready for pick-up at the Guidance Office.";
-          bar.style.width = "85%";
-        } else if(data.status === "Received") {
-          header.innerText = "Document cycle complete.";
-          bar.style.width = "100%";
-        } else {
-          header.innerText = "Your document has been received.";
-          bar.style.width = "15%";
-        }
+        const h = document.getElementById('trackHeaderMessage');
+        const b = document.getElementById('trackBar');
+        if(data.status === "Processing") { h.innerText = "Your document is being processed."; b.style.width = "40%"; }
+        else if(data.status === "Ready for Pickup") { h.innerText = "Your document is ready for pick-up at the Guidance Office."; b.style.width = "85%"; }
+        else if(data.status === "Received") { h.innerText = "Document cycle complete."; b.style.width = "100%"; }
+        else { h.innerText = "Your document has been received."; b.style.width = "15%"; }
       } catch (e) { alert("Error."); }
       btn.innerText = "Check Status";
     }
@@ -245,8 +208,7 @@
       const email = document.getElementById('adminEmail').value.trim();
       const password = document.getElementById('adminPass').value;
       const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "login", email, password}) });
-      const auth = await res.text();
-      if (auth === "authorized") { showSection('admin-panel'); loadAdminData(); } else { alert("Denied."); }
+      if ((await res.text()) === "authorized") { showSection('admin-panel'); loadAdminData(); } else { alert("Denied."); }
     }
 
     async function loadAdminData() {
@@ -257,7 +219,7 @@
         const data = await res.json();
         body.innerHTML = "";
         data.reverse().forEach(row => {
-          body.innerHTML += `<tr class="border-b hover:bg-emerald-50 transition"><td class="p-4 font-mono font-bold text-xs">${row[0]}</td><td class="p-4"><b>${row[2]}</b><br><span class="text-[10px] text-gray-400">${row[3]}</span></td><td class="p-4 text-[10px] font-semibold">${row[4]}</td><td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-tighter">${row[6]}</span></td><td class="p-4 text-center"><select onchange="updateStatus('${row[0]}', this.value)" class="text-[10px] border rounded p-1 outline-none bg-white"><option value="">Select</option><option value="Processing">Processing</option><option value="Ready for Pickup">Ready for Pickup</option><option value="Received">Received</option></select></td></tr>`;
+          body.innerHTML += `<tr class="border-b hover:bg-emerald-50 transition"><td class="p-4 font-mono font-bold text-xs">${row[0]}</td><td class="p-4"><b>${row[2]}</b><br><span class="text-[10px] text-gray-400">${row[3]}</span></td><td class="p-4 text-[10px] font-semibold">${row[4]}</td><td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-tighter">${row[6]}</span></td><td class="p-4 text-center"><select onchange="updateStatus('${row[0]}', this.value)" class="text-[10px] border rounded p-1 bg-white"><option value="">Select</option><option value="Processing">Processing</option><option value="Ready for Pickup">Ready for Pickup</option><option value="Received">Received</option></select></td></tr>`;
         });
       } catch (e) { body.innerHTML = "Error."; }
     }
