@@ -8,44 +8,31 @@
 
 <style>
 .hidden-section{display:none}
-.nav-btn{transition:.2s;border-bottom:2px solid transparent}
-.nav-btn:hover{color:#059669;border-color:#059669}
-.active-nav{color:#059669;border-color:#059669;font-weight:bold}
-body{background:radial-gradient(circle at top right,#ecfdf5,#f0fdf4)}
+video{border-radius:12px}
+canvas{display:none}
 </style>
 </head>
 
-<body class="font-sans text-gray-800 min-h-screen">
+<body class="bg-emerald-50 font-sans">
 
-<nav class="bg-white/80 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
-<button onclick="showSection('request')" id="btn-request" class="nav-btn py-1 active-nav">Request</button>
-<button onclick="showSection('track')" id="btn-track" class="nav-btn py-1">Track</button>
-<button onclick="showSection('admin-login')" id="btn-admin" class="text-gray-400 text-xs mt-1 hover:text-gray-600">Admin</button>
-</nav>
+<div class="max-w-2xl mx-auto p-6">
 
-<!-- REQUEST SECTION -->
-<section id="request" class="max-w-2xl mx-auto py-12 px-4">
-<div class="bg-white rounded-3xl shadow-xl p-8 border-t-8 border-emerald-500">
+<h1 class="text-3xl font-bold text-center mb-6 text-emerald-700">
+E-DocuQuest Portal
+</h1>
 
-<h1 class="text-3xl font-black text-emerald-800 text-center">E-DocuQuest</h1>
-<p class="text-center text-emerald-600 mb-8">Bukal National High School</p>
+<form id="requestForm" class="bg-white p-6 rounded-xl shadow space-y-4">
+<input id="name" type="text" placeholder="Full Name" class="w-full p-3 border rounded" required>
+<input id="email" type="email" placeholder="Email" class="w-full p-3 border rounded" required>
 
-<form id="requestForm" class="space-y-4">
-<input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-gray-50 rounded-xl border" required>
-<input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-gray-50 rounded-xl border" required>
-<input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-gray-50 rounded-xl border">
-
-<select id="document" class="w-full p-4 bg-gray-50 rounded-xl border" required>
-<option value="">Select Document...</option>
+<select id="document" class="w-full p-3 border rounded" required>
+<option value="">Select Document</option>
 <option>Form 137</option>
 <option>Form 138</option>
 <option>Certificate of Good Moral</option>
-<option>Certificate of Graduation</option>
 </select>
 
-<textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-gray-50 rounded-xl border" rows="3" required></textarea>
-
-<button type="submit" id="submitBtn" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold">
+<button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded font-bold">
 Submit Request
 </button>
 </form>
@@ -53,80 +40,71 @@ Submit Request
 <div id="requestFeedback" class="mt-6"></div>
 
 <!-- VERIFICATION SECTION -->
-<div id="verificationSection" class="hidden-section mt-6 bg-yellow-50 border border-yellow-300 p-6 rounded-2xl">
-<h3 class="font-bold text-yellow-700 mb-2">Identity Verification Required</h3>
-<p class="text-sm text-yellow-600 mb-4">Upload Government ID and Selfie for admin approval.</p>
+<div id="verificationSection" class="hidden-section mt-6 bg-white p-6 rounded-xl shadow space-y-4">
 
-<input type="file" id="govIdUpload" accept="image/*" class="mb-3 w-full p-2 border rounded-lg bg-white">
-<input type="file" id="selfieUpload" accept="image/*" class="mb-4 w-full p-2 border rounded-lg bg-white">
+<h2 class="font-bold text-yellow-700 text-lg">Identity Verification</h2>
 
-<button onclick="submitVerification()" class="w-full bg-yellow-600 text-white py-3 rounded-xl font-bold">
+<!-- GOV ID -->
+<div>
+<p class="font-bold">Government ID</p>
+
+<input type="file" id="govFile" accept="image/*" capture="environment"
+class="w-full p-2 border rounded mb-2">
+
+<button onclick="openCamera('gov')" type="button"
+class="bg-blue-500 text-white px-3 py-1 rounded text-sm">
+Open Camera
+</button>
+
+<video id="govVideo" class="hidden w-full mt-2" autoplay></video>
+<button onclick="capturePhoto('gov')" type="button"
+class="hidden bg-green-600 text-white px-3 py-1 rounded mt-2"
+id="govCaptureBtn">Capture</button>
+
+<img id="govPreview" class="mt-2 w-full rounded">
+</div>
+
+<!-- SELFIE -->
+<div>
+<p class="font-bold">Selfie Photo</p>
+
+<input type="file" id="selfieFile" accept="image/*" capture="user"
+class="w-full p-2 border rounded mb-2">
+
+<button onclick="openCamera('selfie')" type="button"
+class="bg-blue-500 text-white px-3 py-1 rounded text-sm">
+Open Camera
+</button>
+
+<video id="selfieVideo" class="hidden w-full mt-2" autoplay></video>
+<button onclick="capturePhoto('selfie')" type="button"
+class="hidden bg-green-600 text-white px-3 py-1 rounded mt-2"
+id="selfieCaptureBtn">Capture</button>
+
+<img id="selfiePreview" class="mt-2 w-full rounded">
+</div>
+
+<button onclick="submitVerification()" type="button"
+class="w-full bg-yellow-600 text-white py-3 rounded font-bold">
 Submit Verification
 </button>
 
-<div id="verificationFeedback" class="mt-4"></div>
+<div id="verificationFeedback"></div>
 </div>
 
 </div>
-</section>
-
-<!-- TRACK SECTION -->
-<section id="track" class="hidden-section max-w-xl mx-auto py-12 px-4">
-<div class="bg-white p-8 rounded-2xl shadow text-center">
-<h2 class="text-xl font-bold mb-4">Track Document</h2>
-<input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 border rounded-xl mb-4 text-center font-mono">
-<button onclick="handleTrack()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">Check Status</button>
-<div id="trackResult" class="mt-6 font-bold text-lg"></div>
-</div>
-</section>
-
-<!-- ADMIN LOGIN -->
-<section id="admin-login" class="hidden-section max-w-sm mx-auto py-12 px-4">
-<div class="bg-white p-8 rounded-xl shadow">
-<h2 class="font-bold mb-4 text-center">Admin Login</h2>
-<input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded mb-3">
-<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded mb-4">
-<button onclick="handleAdminLogin()" class="w-full bg-gray-800 text-white py-3 rounded font-bold">
-Login
-</button>
-</div>
-</section>
-
-<!-- ADMIN PANEL -->
-<section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
-<div class="bg-white p-6 rounded-2xl shadow">
-<h2 class="text-2xl font-bold mb-4">Admin Dashboard</h2>
-<table class="w-full border-collapse text-sm">
-<thead class="bg-emerald-600 text-white">
-<tr>
-<th class="p-3">ID</th>
-<th class="p-3">Name</th>
-<th class="p-3">Document</th>
-<th class="p-3">Status</th>
-<th class="p-3">Verification</th>
-</tr>
-</thead>
-<tbody id="adminTableBody"></tbody>
-</table>
-</div>
-</section>
 
 <script>
 const SCRIPT_URL="YOUR_GOOGLE_SCRIPT_URL_HERE";
-let currentTrackingId="";
+let trackingId="";
+let govImageBase64="";
+let selfieImageBase64="";
+let stream;
 
-function showSection(id){
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden-section"));
-document.getElementById(id).classList.remove("hidden-section");
-}
-
+// REQUEST SUBMIT
 document.getElementById("requestForm").addEventListener("submit",async e=>{
 e.preventDefault();
-const btn=document.getElementById("submitBtn");
-btn.disabled=true;
-
-const trackingId="BNHS-"+Math.floor(10000+Math.random()*90000);
-currentTrackingId=trackingId;
+trackingId="BNHS-"+Math.floor(10000+Math.random()*90000);
 
 await fetch(SCRIPT_URL,{
 method:"POST",
@@ -135,95 +113,96 @@ action:"submit",
 trackingId,
 name:name.value,
 email:email.value,
-contact:contact.value,
 document:document.getElementById("document").value,
-reason:reason.value,
 status:"Pending Verification"
 })
 });
 
 document.getElementById("requestFeedback").innerHTML=
-`<div class="bg-emerald-600 text-white p-4 rounded-xl text-center">
-Tracking ID:<br><span class="text-2xl font-mono">${trackingId}</span>
+`<div class="bg-emerald-600 text-white p-4 rounded text-center">
+Tracking ID:<br><b>${trackingId}</b>
 </div>`;
 
 document.getElementById("verificationSection").classList.remove("hidden-section");
-btn.disabled=false;
 });
 
-async function submitVerification(){
-const gov=document.getElementById("govIdUpload").files[0];
-const selfie=document.getElementById("selfieUpload").files[0];
-if(!gov||!selfie) return alert("Upload both images.");
+// OPEN CAMERA
+async function openCamera(type){
+const video=document.getElementById(type+"Video");
+const captureBtn=document.getElementById(type+"CaptureBtn");
 
-const toBase64=f=>new Promise(r=>{
+video.classList.remove("hidden");
+captureBtn.classList.remove("hidden");
+
+stream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:type==="selfie"?"user":"environment"}
+});
+
+video.srcObject=stream;
+}
+
+// CAPTURE PHOTO
+function capturePhoto(type){
+const video=document.getElementById(type+"Video");
+const preview=document.getElementById(type+"Preview");
+const canvas=document.createElement("canvas");
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+canvas.getContext("2d").drawImage(video,0,0);
+const imageData=canvas.toDataURL("image/jpeg");
+
+preview.src=imageData;
+
+if(type==="gov") govImageBase64=imageData;
+else selfieImageBase64=imageData;
+
+stream.getTracks().forEach(track=>track.stop());
+video.classList.add("hidden");
+document.getElementById(type+"CaptureBtn").classList.add("hidden");
+}
+
+// FILE SELECT
+document.getElementById("govFile").addEventListener("change",function(){
 const reader=new FileReader();
-reader.onload=()=>r(reader.result);
-reader.readAsDataURL(f);
+reader.onload=e=>{
+govImageBase64=e.target.result;
+document.getElementById("govPreview").src=e.target.result;
+};
+reader.readAsDataURL(this.files[0]);
 });
+
+document.getElementById("selfieFile").addEventListener("change",function(){
+const reader=new FileReader();
+reader.onload=e=>{
+selfieImageBase64=e.target.result;
+document.getElementById("selfiePreview").src=e.target.result;
+};
+reader.readAsDataURL(this.files[0]);
+});
+
+// SUBMIT VERIFICATION
+async function submitVerification(){
+if(!govImageBase64||!selfieImageBase64){
+alert("Please provide both Government ID and Selfie.");
+return;
+}
 
 await fetch(SCRIPT_URL,{
 method:"POST",
 body:JSON.stringify({
 action:"uploadVerification",
-trackingId:currentTrackingId,
-govId:await toBase64(gov),
-selfie:await toBase64(selfie)
+trackingId,
+govId:govImageBase64,
+selfie:selfieImageBase64
 })
 });
 
 document.getElementById("verificationFeedback").innerHTML=
-`<div class="bg-yellow-500 text-white p-3 rounded-xl text-center">
-Verification Submitted. Awaiting Admin Approval.
+`<div class="bg-yellow-500 text-white p-3 rounded text-center">
+Verification Submitted. Await Admin Approval.
 </div>`;
 }
-
-async function handleTrack(){
-const id=trackId.value.toUpperCase();
-const res=await fetch(SCRIPT_URL,{
-method:"POST",
-body:JSON.stringify({action:"track",trackingId:id})
-});
-const data=await res.text();
-document.getElementById("trackResult").innerText=data;
-}
-
-async function handleAdminLogin(){
-showSection("admin-panel");
-loadAdminData();
-}
-
-async function loadAdminData(){
-const res=await fetch(SCRIPT_URL,{
-method:"POST",
-body:JSON.stringify({action:"loadAll"})
-});
-const data=await res.json();
-const body=document.getElementById("adminTableBody");
-body.innerHTML="";
-data.forEach(row=>{
-body.innerHTML+=`
-<tr class="border-b">
-<td class="p-3 font-mono">${row[0]}</td>
-<td class="p-3">${row[2]}</td>
-<td class="p-3">${row[4]}</td>
-<td class="p-3">${row[6]}</td>
-<td class="p-3">
-${row[6]==="Pending Verification"
-?`<button onclick="approveVerification('${row[0]}')" class="bg-yellow-500 text-white px-3 py-1 rounded text-xs">Verify</button>`
-:"Verified"}
-</td>
-</tr>`;
-});
-}
-
-async function approveVerification(tid){
-await fetch(SCRIPT_URL,{
-method:"POST",
-body:JSON.stringify({action:"approveVerification",trackingId:tid})
-});
-loadAdminData();
-}
 </script>
+
 </body>
 </html>
