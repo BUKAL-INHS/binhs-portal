@@ -1,234 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-DocuQuest | Bukal INHS</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .hidden-section { display: none; }
-    .nav-btn { transition: all 0.2s; border-bottom: 2px solid transparent; }
-    .nav-btn:hover { color: #064e3b; border-color: #064e3b; }
-    .active-nav { color: #064e3b; border-color: #064e3b; font-weight: bold; }
-    
-    body { 
-      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%); 
-      overflow-x: hidden;
-      position: relative;
-      min-height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-DocuQuest Portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    .leaf-container {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 0;
-    }
-
-    .leaf {
-      position: absolute;
-      width: 25px; height: 25px;
-      background: #13633d;
-      opacity: 0.3;
-      border-radius: 0 100% 0 100%;
-      animation: float 12s infinite linear;
-      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
-    }
-
-    @keyframes float {
-      0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-      15% { opacity: 0.3; }
-      85% { opacity: 0.3; }
-      100% { transform: translateY(110vh) translateX(150px) rotate(450deg); opacity: 0; }
-    }
-
-    .leaf:nth-child(1) { left: 5%; animation-duration: 14s; }
-    .leaf:nth-child(2) { left: 25%; animation-duration: 18s; animation-delay: -3s; }
-    .leaf:nth-child(3) { left: 45%; animation-duration: 12s; animation-delay: -6s; }
-    .leaf:nth-child(4) { left: 65%; animation-duration: 20s; animation-delay: -2s; }
-    .leaf:nth-child(5) { left: 85%; animation-duration: 15s; animation-delay: -5s; }
-
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-  </style>
+<style>
+.hidden-section{display:none}
+.nav-btn{transition:.2s;border-bottom:2px solid transparent}
+.nav-btn:hover{color:#059669;border-color:#059669}
+.active-nav{color:#059669;border-color:#059669;font-weight:bold}
+body{background:radial-gradient(circle at top right,#ecfdf5,#f0fdf4)}
+</style>
 </head>
-<body class="font-sans text-gray-800">
 
-  <div class="leaf-container">
-    <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
-  </div>
+<body class="font-sans text-gray-800 min-h-screen">
 
-  <div class="content-wrapper">
-    <nav class="bg-white/70 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
-      <button onclick="showSection('request')" id="btn-request" class="nav-btn py-1 active-nav">Request</button>
-      <button onclick="showSection('track')" id="btn-track" class="nav-btn py-1">Track Progress</button>
-      <button onclick="showSection('admin-login')" id="btn-admin" class="text-gray-500 text-[10px] mt-1 hover:text-gray-800 transition uppercase tracking-widest">Admin Access</button>
-    </nav>
+<nav class="bg-white/80 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
+<button onclick="showSection('request')" id="btn-request" class="nav-btn py-1 active-nav">Request</button>
+<button onclick="showSection('track')" id="btn-track" class="nav-btn py-1">Track</button>
+<button onclick="showSection('admin-login')" id="btn-admin" class="text-gray-400 text-xs mt-1 hover:text-gray-600">Admin</button>
+</nav>
 
-    <section id="request" class="max-w-2xl mx-auto py-12 px-4">
-      <div class="glass-panel rounded-3xl shadow-2xl p-8 border-t-8 border-[#13633d] text-center">
-        
-        <div class="relative mx-auto w-40 h-40 mb-6">
-          <div class="absolute inset-0 bg-[#13633d] opacity-20 rounded-full blur-2xl scale-110"></div>
-          <div class="relative w-full h-full bg-white rounded-full border-4 border-white shadow-xl overflow-hidden flex items-center justify-center">
-            <img 
-              src="261a53ce-5210-43ea-b265-f72beaa28d07.jfif" 
-              alt="Bukal INHS Logo" 
-              class="w-[99%] h-[99%] object-contain scale-100"
-            >
-          </div>
-        </div>
+<!-- REQUEST SECTION -->
+<section id="request" class="max-w-2xl mx-auto py-12 px-4">
+<div class="bg-white rounded-3xl shadow-xl p-8 border-t-8 border-emerald-500">
 
-        <div class="mb-8">
-          <h1 class="text-3xl font-black text-gray-900 tracking-tight">E-DocuQuest</h1>
-          <p class="text-[#13633d] font-bold uppercase tracking-wider text-sm">Bukal Integrated National High School</p>
-          <p class="text-gray-500 text-[10px] mt-1 uppercase tracking-widest font-semibold">Padre Garcia, Batangas • Est. 1981</p>
-        </div>
-        
-        <form id="requestForm" class="space-y-4 text-left">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" required>
-            <input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" required>
-          </div>
-          <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none">
-          <select id="document" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" required>
-            <option value="">Select Document...</option>
-            <option>Form 137 (Permanent Record)</option>
-            <option>Form 138 (Report Card)</option>
-            <option>Certificate of Good Moral</option>
-            <option>Certificate of Graduation</option>
-            <option>Request / Transfer Letter</option>
-          </select>
-          <textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 outline-none" rows="3" required></textarea>
-          <button type="submit" id="submitBtn" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg active:scale-95 transition-all">Submit Request</button>
-        </form>
-        <div id="requestFeedback" class="mt-6 text-left"></div>
-      </div>
-    </section>
+<h1 class="text-3xl font-black text-emerald-800 text-center">E-DocuQuest</h1>
+<p class="text-center text-emerald-600 mb-8">Bukal National High School</p>
 
-    <section id="track" class="hidden-section max-w-xl mx-auto py-12 px-4">
-      <div class="glass-panel rounded-3xl shadow-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-2">Track Your Document</h2>
-        <p class="text-gray-600 mb-6 italic text-sm">Enter your Tracking ID below</p>
-        <input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 bg-white/50 rounded-xl border border-gray-200 mb-4 text-center font-mono text-xl uppercase tracking-widest outline-none focus:border-[#13633d] transition">
-        <button onclick="handleTrack()" id="trackBtn" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold hover:brightness-110 shadow-md transition">Check Status</button>
-        <div id="trackDisplay" class="hidden-section mt-10 p-6 bg-emerald-50/80 rounded-2xl border border-emerald-100">
-          <p id="trackHeaderMessage" class="text-sm font-bold text-emerald-900 mb-4 px-2 leading-tight"></p>
-          <div class="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden">
-            <div id="trackBar" class="bg-[#13633d] h-full transition-all duration-1000" style="width: 0%"></div>
-          </div>
-          <p class="text-gray-500 text-[10px] uppercase tracking-widest mb-1 font-bold">Current Phase</p>
-          <p id="trackStatusText" class="text-2xl font-black text-[#13633d] italic uppercase tracking-tighter"></p>
-        </div>
-      </div>
-    </section>
+<form id="requestForm" class="space-y-4">
+<input id="name" type="text" placeholder="Full Name" class="w-full p-4 bg-gray-50 rounded-xl border" required>
+<input id="email" type="email" placeholder="Email Address" class="w-full p-4 bg-gray-50 rounded-xl border" required>
+<input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 bg-gray-50 rounded-xl border">
 
-    <section id="admin-login" class="hidden-section max-w-sm mx-auto py-12 px-4">
-      <div class="glass-panel p-8 rounded-2xl shadow-lg border">
-        <h2 class="text-xl font-bold mb-4 text-center">Admin Access</h2>
-        <input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3">
-        <input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded-lg mb-4">
-        <button onclick="handleAdminLogin()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Verify</button>
-      </div>
-    </section>
+<select id="document" class="w-full p-4 bg-gray-50 rounded-xl border" required>
+<option value="">Select Document...</option>
+<option>Form 137</option>
+<option>Form 138</option>
+<option>Certificate of Good Moral</option>
+<option>Certificate of Graduation</option>
+</select>
 
-    <section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
-      <div class="glass-panel p-6 rounded-2xl shadow-2xl">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold">Dashboard</h2>
-          <button onclick="loadAdminData()" class="bg-[#13633d] text-white p-2 px-4 rounded-lg font-bold">🔄 Refresh</button>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left bg-white/50">
-            <thead>
-              <tr class="bg-[#13633d] text-white font-bold">
-                <th class="p-4">ID</th><th class="p-4">Student</th><th class="p-4">Document</th><th class="p-4 text-center">Status</th><th class="p-4 text-center">Update</th>
-              </tr>
-            </thead>
-            <tbody id="adminTableBody" class="text-sm"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </div>
+<textarea id="reason" placeholder="Reason for Request" class="w-full p-4 bg-gray-50 rounded-xl border" rows="3" required></textarea>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNq_pNzkjqME0-myMHUh2ixiOxhdbrzGXiaUCo-REr-jjhcYOf1XCvpr4ey6z2P_mQ/exec"; 
+<button type="submit" id="submitBtn" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold">
+Submit Request
+</button>
+</form>
 
-    function showSection(id) {
-      document.querySelectorAll('section').forEach(s => s.classList.add('hidden-section'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-      document.getElementById(id).classList.remove('hidden-section');
-      const navBtn = document.getElementById('btn-' + id);
-      if(navBtn) navBtn.classList.add('active-nav');
-    }
+<div id="requestFeedback" class="mt-6"></div>
 
-    document.getElementById('requestForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const feedback = document.getElementById('requestFeedback');
-      btn.disabled = true; btn.innerText = "Processing...";
-      const trackingId = "BNHS-" + Math.floor(10000 + Math.random() * 90000);
-      try {
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({
-          action: "submit", trackingId, name: document.getElementById('name').value,
-          email: document.getElementById('email').value, contact: document.getElementById('contact').value,
-          document: document.getElementById('document').value, reason: document.getElementById('reason').value
-        })});
-        feedback.innerHTML = `<div class="bg-[#13633d] p-6 rounded-2xl text-white text-center shadow-lg"><p class="font-bold text-xs uppercase mb-1 tracking-widest">ID Recorded:</p><p class="text-4xl font-mono font-black my-2">${trackingId}</p></div>`;
-        document.getElementById('requestForm').reset();
-      } catch (err) { alert("Error connecting."); }
-      btn.disabled = false; btn.innerText = "Submit Request";
-    });
+<!-- VERIFICATION SECTION -->
+<div id="verificationSection" class="hidden-section mt-6 bg-yellow-50 border border-yellow-300 p-6 rounded-2xl">
+<h3 class="font-bold text-yellow-700 mb-2">Identity Verification Required</h3>
+<p class="text-sm text-yellow-600 mb-4">Upload Government ID and Selfie for admin approval.</p>
 
-    async function handleTrack() {
-      const id = document.getElementById('trackId').value.trim().toUpperCase();
-      if(!id) return;
-      const btn = document.getElementById('trackBtn');
-      btn.innerText = "Finding...";
-      try {
-        const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "track", trackingId: id}) });
-        const data = await res.json();
-        if (data.status === "Not Found") { alert("ID not found."); btn.innerText = "Check Status"; return; }
-        document.getElementById('trackDisplay').classList.remove('hidden-section');
-        document.getElementById('trackStatusText').innerText = data.status;
-        const h = document.getElementById('trackHeaderMessage');
-        const b = document.getElementById('trackBar');
-        if(data.status === "Processing") { h.innerText = "Your document is being processed."; b.style.width = "40%"; }
-        else if(data.status === "Ready for Pickup") { h.innerText = "Your document is ready for pick-up at the Guidance Office."; b.style.width = "85%"; }
-        else if(data.status === "Received") { h.innerText = "Document cycle complete."; b.style.width = "100%"; }
-        else { h.innerText = "Your document has been received."; b.style.width = "15%"; }
-      } catch (e) { alert("Error."); }
-      btn.innerText = "Check Status";
-    }
+<input type="file" id="govIdUpload" accept="image/*" class="mb-3 w-full p-2 border rounded-lg bg-white">
+<input type="file" id="selfieUpload" accept="image/*" class="mb-4 w-full p-2 border rounded-lg bg-white">
 
-    async function handleAdminLogin() {
-      const email = document.getElementById('adminEmail').value.trim();
-      const password = document.getElementById('adminPass').value;
-      const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "login", email, password}) });
-      if ((await res.text()) === "authorized") { showSection('admin-panel'); loadAdminData(); } else { alert("Denied."); }
-    }
+<button onclick="submitVerification()" class="w-full bg-yellow-600 text-white py-3 rounded-xl font-bold">
+Submit Verification
+</button>
 
-    async function loadAdminData() {
-      const body = document.getElementById('adminTableBody');
-      body.innerHTML = "<tr><td colspan='5' class='p-10 text-center'>Syncing...</td></tr>";
-      try {
-        const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "loadAll"}) });
-        const data = await res.json();
-        body.innerHTML = "";
-        data.reverse().forEach(row => {
-          body.innerHTML += `<tr class="border-b hover:bg-emerald-50 transition"><td class="p-4 font-mono font-bold text-xs">${row[0]}</td><td class="p-4"><b>${row[2]}</b><br><span class="text-[10px] text-gray-400">${row[3]}</span></td><td class="p-4 text-[10px] font-semibold">${row[4]}</td><td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-tighter">${row[6]}</span></td><td class="p-4 text-center"><select onchange="updateStatus('${row[0]}', this.value)" class="text-[10px] border rounded p-1 bg-white"><option value="">Select</option><option value="Processing">Processing</option><option value="Ready for Pickup">Ready for Pickup</option><option value="Received">Received</option></select></td></tr>`;
-        });
-      } catch (e) { body.innerHTML = "Error."; }
-    }
+<div id="verificationFeedback" class="mt-4"></div>
+</div>
 
-    async function updateStatus(tid, newStatus) {
-      if (!newStatus) return;
-      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({action: "update", trackingId: tid, newStatus}) });
-      loadAdminData();
-    }
-  </script>
+</div>
+</section>
+
+<!-- TRACK SECTION -->
+<section id="track" class="hidden-section max-w-xl mx-auto py-12 px-4">
+<div class="bg-white p-8 rounded-2xl shadow text-center">
+<h2 class="text-xl font-bold mb-4">Track Document</h2>
+<input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 border rounded-xl mb-4 text-center font-mono">
+<button onclick="handleTrack()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold">Check Status</button>
+<div id="trackResult" class="mt-6 font-bold text-lg"></div>
+</div>
+</section>
+
+<!-- ADMIN LOGIN -->
+<section id="admin-login" class="hidden-section max-w-sm mx-auto py-12 px-4">
+<div class="bg-white p-8 rounded-xl shadow">
+<h2 class="font-bold mb-4 text-center">Admin Login</h2>
+<input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded mb-3">
+<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded mb-4">
+<button onclick="handleAdminLogin()" class="w-full bg-gray-800 text-white py-3 rounded font-bold">
+Login
+</button>
+</div>
+</section>
+
+<!-- ADMIN PANEL -->
+<section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
+<div class="bg-white p-6 rounded-2xl shadow">
+<h2 class="text-2xl font-bold mb-4">Admin Dashboard</h2>
+<table class="w-full border-collapse text-sm">
+<thead class="bg-emerald-600 text-white">
+<tr>
+<th class="p-3">ID</th>
+<th class="p-3">Name</th>
+<th class="p-3">Document</th>
+<th class="p-3">Status</th>
+<th class="p-3">Verification</th>
+</tr>
+</thead>
+<tbody id="adminTableBody"></tbody>
+</table>
+</div>
+</section>
+
+<script>
+const SCRIPT_URL="YOUR_GOOGLE_SCRIPT_URL_HERE";
+let currentTrackingId="";
+
+function showSection(id){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden-section"));
+document.getElementById(id).classList.remove("hidden-section");
+}
+
+document.getElementById("requestForm").addEventListener("submit",async e=>{
+e.preventDefault();
+const btn=document.getElementById("submitBtn");
+btn.disabled=true;
+
+const trackingId="BNHS-"+Math.floor(10000+Math.random()*90000);
+currentTrackingId=trackingId;
+
+await fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"submit",
+trackingId,
+name:name.value,
+email:email.value,
+contact:contact.value,
+document:document.getElementById("document").value,
+reason:reason.value,
+status:"Pending Verification"
+})
+});
+
+document.getElementById("requestFeedback").innerHTML=
+`<div class="bg-emerald-600 text-white p-4 rounded-xl text-center">
+Tracking ID:<br><span class="text-2xl font-mono">${trackingId}</span>
+</div>`;
+
+document.getElementById("verificationSection").classList.remove("hidden-section");
+btn.disabled=false;
+});
+
+async function submitVerification(){
+const gov=document.getElementById("govIdUpload").files[0];
+const selfie=document.getElementById("selfieUpload").files[0];
+if(!gov||!selfie) return alert("Upload both images.");
+
+const toBase64=f=>new Promise(r=>{
+const reader=new FileReader();
+reader.onload=()=>r(reader.result);
+reader.readAsDataURL(f);
+});
+
+await fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"uploadVerification",
+trackingId:currentTrackingId,
+govId:await toBase64(gov),
+selfie:await toBase64(selfie)
+})
+});
+
+document.getElementById("verificationFeedback").innerHTML=
+`<div class="bg-yellow-500 text-white p-3 rounded-xl text-center">
+Verification Submitted. Awaiting Admin Approval.
+</div>`;
+}
+
+async function handleTrack(){
+const id=trackId.value.toUpperCase();
+const res=await fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify({action:"track",trackingId:id})
+});
+const data=await res.text();
+document.getElementById("trackResult").innerText=data;
+}
+
+async function handleAdminLogin(){
+showSection("admin-panel");
+loadAdminData();
+}
+
+async function loadAdminData(){
+const res=await fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify({action:"loadAll"})
+});
+const data=await res.json();
+const body=document.getElementById("adminTableBody");
+body.innerHTML="";
+data.forEach(row=>{
+body.innerHTML+=`
+<tr class="border-b">
+<td class="p-3 font-mono">${row[0]}</td>
+<td class="p-3">${row[2]}</td>
+<td class="p-3">${row[4]}</td>
+<td class="p-3">${row[6]}</td>
+<td class="p-3">
+${row[6]==="Pending Verification"
+?`<button onclick="approveVerification('${row[0]}')" class="bg-yellow-500 text-white px-3 py-1 rounded text-xs">Verify</button>`
+:"Verified"}
+</td>
+</tr>`;
+});
+}
+
+async function approveVerification(tid){
+await fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify({action:"approveVerification",trackingId:tid})
+});
+loadAdminData();
+}
+</script>
 </body>
 </html>
