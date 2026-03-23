@@ -8,91 +8,148 @@
 
 <style>
 .hidden-section{display:none;}
-.nav-btn{border-bottom:2px solid transparent;}
+.nav-btn{border-bottom:2px solid transparent;transition:.2s;}
 .nav-btn:hover{color:#064e3b;border-color:#064e3b;}
 .active-nav{color:#064e3b;border-color:#064e3b;font-weight:bold;}
-body{background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);}
-.glass{background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);}
+
+body{
+background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
+overflow-x:hidden;
+}
+
+/* 🌿 FLOATING LEAVES */
+.leaf{
+position:fixed;
+width:25px;height:25px;
+background:#13633d;
+opacity:.25;
+border-radius:0 100% 0 100%;
+animation:fall linear infinite;
+}
+@keyframes fall{
+0%{transform:translateY(-10vh) rotate(0);opacity:0;}
+10%{opacity:.3;}
+100%{transform:translateY(110vh) rotate(360deg);opacity:0;}
+}
+
+.glass{
+background:rgba(255,255,255,0.9);
+backdrop-filter:blur(10px);
+}
 </style>
 </head>
 
 <body class="font-sans text-gray-800">
 
-<nav class="bg-white/70 p-4 flex justify-center gap-8 sticky top-0">
-<button onclick="show('request')" id="btn-request" class="nav-btn active-nav">Request</button>
-<button onclick="show('track')" id="btn-track" class="nav-btn">Track</button>
+<!-- 🌿 LEAVES -->
+<script>
+for(let i=0;i<6;i++){
+let leaf=document.createElement("div");
+leaf.className="leaf";
+leaf.style.left=Math.random()*100+"%";
+leaf.style.animationDuration=(10+Math.random()*10)+"s";
+document.body.appendChild(leaf);
+}
+</script>
+
+<nav class="bg-white/70 p-4 flex justify-center gap-8 sticky top-0 z-50 backdrop-blur">
+<button onclick="show('request')" class="nav-btn active-nav">Request</button>
+<button onclick="show('track')" class="nav-btn">Track</button>
 <button onclick="show('admin-login')" class="text-xs">Admin</button>
 </nav>
 
 <!-- REQUEST -->
 <section id="request" class="max-w-2xl mx-auto p-6">
-<div class="glass p-6 rounded-2xl shadow">
+<div class="glass p-6 rounded-2xl shadow-xl">
 
-<h1 class="text-2xl font-bold mb-4 text-center">E-DocuQuest</h1>
+<h1 class="text-3xl font-black text-center mb-2">E-DocuQuest</h1>
+<p class="text-center text-green-800 text-sm mb-6">Bukal Integrated National High School</p>
 
-<form id="form" class="space-y-3">
+<form id="form" class="space-y-4">
 
-<input id="name" placeholder="Full Name" required class="w-full p-3 border rounded">
-<input id="email" placeholder="Email" required class="w-full p-3 border rounded">
-<input id="contact" placeholder="Contact" class="w-full p-3 border rounded">
+<input id="name" placeholder="Full Name" required class="w-full p-3 border rounded-xl">
+<input id="email" placeholder="Email Address" required class="w-full p-3 border rounded-xl">
+<input id="contact" placeholder="Contact Number" class="w-full p-3 border rounded-xl">
 
-<select id="document" required class="w-full p-3 border rounded">
+<select id="document" required class="w-full p-3 border rounded-xl">
 <option value="">Select Document</option>
-<option>Form 137</option>
-<option>Form 138</option>
-<option>Good Moral</option>
-<option>Graduation</option>
+<option>Form 137 / SF10 (Permanent Record)</option>
+<option>Form 138 / SF9 (Report Card)</option>
+<option>Certificate of Good Moral Character</option>
+<option>Certificate of Graduation</option>
+<option>Request / Transfer Letter</option>
 </select>
 
-<textarea id="reason" placeholder="Reason" required class="w-full p-3 border rounded"></textarea>
+<textarea id="reason" placeholder="Reason for Request" required class="w-full p-3 border rounded-xl"></textarea>
 
-<label>Upload Government ID</label>
-<input id="govtId" type="file" accept="image/*" required>
+<!-- UPLOAD -->
+<div class="space-y-4">
 
-<label>Upload Selfie</label>
-<input id="selfie" type="file" accept="image/*" required>
+<div class="border-2 border-dashed border-green-400 p-4 rounded-xl text-center bg-green-50">
+<p class="font-bold">Government ID</p>
+<input id="govtId" type="file" accept="image/*" class="hidden">
+<div onclick="govtId.click()" class="cursor-pointer">
+<p class="text-sm text-gray-500">Click to upload</p>
+<img id="idPreview" class="mx-auto mt-2 hidden max-h-40 rounded shadow">
+</div>
+</div>
 
-<button class="w-full bg-green-700 text-white p-3 rounded">Submit</button>
+<div class="border-2 border-dashed border-green-400 p-4 rounded-xl text-center bg-green-50">
+<p class="font-bold">Selfie Verification</p>
+
+<div class="flex justify-center gap-2 mt-2">
+<button type="button" onclick="selfie.click()" class="bg-green-700 text-white px-3 py-1 rounded">Upload</button>
+<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">Camera</button>
+</div>
+
+<input id="selfie" type="file" accept="image/*" class="hidden">
+
+<video id="video" class="hidden mx-auto mt-2 rounded max-h-40" autoplay></video>
+<button id="captureBtn" onclick="capture()" type="button" class="hidden bg-red-600 text-white px-3 py-1 mt-2 rounded">Capture</button>
+
+<canvas id="canvas" class="hidden"></canvas>
+<img id="selfiePreview" class="mx-auto mt-2 hidden max-h-40 rounded shadow">
+</div>
+
+</div>
+
+<button class="w-full bg-green-700 text-white p-3 rounded-xl font-bold">Submit Request</button>
 </form>
 
-<div id="msg" class="mt-4"></div>
+<div id="msg" class="mt-4 text-center"></div>
+
 </div>
 </section>
 
 <!-- TRACK -->
 <section id="track" class="hidden-section max-w-xl mx-auto p-6">
-<div class="glass p-6 rounded-2xl text-center">
-<input id="trackId" placeholder="BNHS-XXXXX" class="w-full p-3 border mb-3 text-center">
-<button onclick="track()" class="bg-green-700 text-white p-3 w-full rounded">Check</button>
-<p id="status" class="mt-4 font-bold"></p>
+<div class="glass p-6 rounded-xl text-center">
+<input id="trackId" placeholder="BNHS-XXXXX" class="w-full p-3 border rounded mb-3 text-center">
+<button onclick="track()" class="bg-green-700 text-white p-3 w-full rounded">Check Status</button>
+<p id="status" class="mt-4 font-bold text-green-800"></p>
 </div>
 </section>
 
 <!-- ADMIN LOGIN -->
 <section id="admin-login" class="hidden-section max-w-sm mx-auto p-6">
-<div class="glass p-6 rounded-2xl">
+<div class="glass p-6 rounded-xl">
 <input id="pass" type="password" placeholder="Admin Password" class="w-full p-3 border mb-3">
 <button onclick="login()" class="w-full bg-black text-white p-3 rounded">Login</button>
 </div>
 </section>
 
 <!-- ADMIN PANEL -->
-<section id="admin" class="hidden-section max-w-5xl mx-auto p-6">
-<div class="glass p-6 rounded-2xl">
+<section id="admin" class="hidden-section max-w-6xl mx-auto p-6">
+<div class="glass p-6 rounded-xl">
 
-<h2 class="text-xl font-bold mb-4">Admin Panel</h2>
+<h2 class="text-xl font-bold mb-4">Dashboard</h2>
 
 <table class="w-full text-sm">
 <thead class="bg-green-700 text-white">
 <tr>
-<th class="p-2">ID</th>
-<th>Name</th>
-<th>Doc</th>
-<th>Status</th>
-<th>Actions</th>
+<th>ID</th><th>Name</th><th>Document</th><th>Status</th><th>Actions</th>
 </tr>
 </thead>
-
 <tbody id="table"></tbody>
 </table>
 
@@ -103,13 +160,34 @@ body{background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);}
 const URL="https://script.google.com/macros/s/AKfycbzslIE8UmCW8ASJb2JVB6gM2I-G9H2F62NF7czeR4pBcqNJDmBfdk0Qf9i_QeQdvu0D/exec";
 
 function show(id){
-document.querySelectorAll('section').forEach(s=>s.classList.add('hidden-section'));
-document.getElementById(id).classList.remove('hidden-section');
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden-section"));
+document.getElementById(id).classList.remove("hidden-section");
 }
 
-document.getElementById('form').addEventListener('submit',async e=>{
-e.preventDefault();
+// PREVIEW
+govtId.onchange=()=>{idPreview.src=URL.createObjectURL(govtId.files[0]);idPreview.classList.remove("hidden");};
+selfie.onchange=()=>{selfiePreview.src=URL.createObjectURL(selfie.files[0]);selfiePreview.classList.remove("hidden");};
 
+// CAMERA
+async function openCamera(){
+video.classList.remove("hidden");
+captureBtn.classList.remove("hidden");
+const stream=await navigator.mediaDevices.getUserMedia({video:true});
+video.srcObject=stream;
+}
+
+function capture(){
+const ctx=canvas.getContext("2d");
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+ctx.drawImage(video,0,0);
+selfiePreview.src=canvas.toDataURL("image/png");
+selfiePreview.classList.remove("hidden");
+}
+
+// SUBMIT
+form.onsubmit=async e=>{
+e.preventDefault();
 let id="BNHS-"+Math.floor(10000+Math.random()*90000);
 
 let f=new FormData();
@@ -120,44 +198,52 @@ f.append("contact",contact.value);
 f.append("document",document.value);
 f.append("reason",reason.value);
 f.append("govtId",govtId.files[0]);
+
+if(canvas.width>0){
+let blob=await (await fetch(canvas.toDataURL())).blob();
+f.append("selfie",blob,"selfie.png");
+}else{
 f.append("selfie",selfie.files[0]);
+}
 
 await fetch(URL,{method:"POST",body:f});
 
 msg.innerHTML="Tracking ID: <b>"+id+"</b>";
 form.reset();
-});
+};
 
+// TRACK
 async function track(){
-let res=await fetch(URL,{method:"POST",body:JSON.stringify({action:"track",trackingId:trackId.value})});
-let d=await res.json();
+let r=await fetch(URL,{method:"POST",body:JSON.stringify({action:"track",trackingId:trackId.value})});
+let d=await r.json();
 status.innerText=d.status;
 }
 
+// LOGIN
 async function login(){
-let res=await fetch(URL,{method:"POST",body:JSON.stringify({action:"login",password:pass.value})});
-if(await res.text()=="authorized"){
-show("admin"); load();
-}else alert("Denied");
+let r=await fetch(URL,{method:"POST",body:JSON.stringify({action:"login",password:pass.value})});
+if(await r.text()=="authorized"){show("admin");load();}
+else alert("Denied");
 }
 
+// LOAD ADMIN
 async function load(){
-let res=await fetch(URL,{method:"POST",body:JSON.stringify({action:"loadAll"})});
-let d=await res.json();
+let r=await fetch(URL,{method:"POST",body:JSON.stringify({action:"loadAll"})});
+let d=await r.json();
 
 table.innerHTML="";
-d.slice(1).reverse().forEach(r=>{
+d.slice(1).reverse().forEach(x=>{
 table.innerHTML+=`
 <tr>
-<td>${r[0]}</td>
-<td>${r[2]}</td>
-<td>${r[5]}</td>
-<td>${r[6]}</td>
+<td>${x[0]}</td>
+<td>${x[2]}</td>
+<td>${x[5]}</td>
+<td>${x[6]}</td>
 <td>
-<button onclick="act('${r[0]}','verifyId')">ID</button>
-<button onclick="act('${r[0]}','verifySelfie')">Selfie</button>
-<button onclick="act('${r[0]}','archive')">Archive</button>
-<button onclick="act('${r[0]}','delete')">Delete</button>
+<button onclick="act('${x[0]}','verifyId')">ID</button>
+<button onclick="act('${x[0]}','verifySelfie')">Selfie</button>
+<button onclick="act('${x[0]}','archive')">Archive</button>
+<button onclick="act('${x[0]}','delete')">Delete</button>
 </td>
 </tr>`;
 });
