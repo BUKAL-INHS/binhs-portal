@@ -3,28 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-DocuQuest</title>
+<title>E-DocuQuest | Bukal INHS</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-.hidden-section{display:none;}
-body{background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);}
+.hidden{display:none;}
+body{
+background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
+}
 </style>
 </head>
 
-<body class="font-sans">
+<body class="font-sans text-gray-800">
 
-<nav class="p-4 text-center bg-white">
+<!-- NAV -->
+<nav class="p-4 bg-white text-center shadow space-x-4">
 <button onclick="show('request')">Request</button>
 <button onclick="show('track')">Track</button>
 <button onclick="show('admin')">Admin</button>
 </nav>
 
 <!-- REQUEST -->
-<section id="request" class="p-6 max-w-xl mx-auto">
-
-<h1 class="text-2xl font-bold mb-4">Request Document</h1>
+<section id="request" class="max-w-xl mx-auto p-6">
+<h1 class="text-2xl font-bold mb-4">Document Request</h1>
 
 <form id="form" class="space-y-3">
 
-<input id="name" placeholder="
+<input id="name" required placeholder="Full Name" class="w-full p-3 border rounded">
+<input id="email" required placeholder="Email" class="w-full p-3 border rounded">
+<input id="contact" placeholder="Contact Number" class="w-full p-3 border rounded">
+
+<select id="document" required class="w-full p-3 border rounded">
+<option value="">Select Document</option>
+<option>Form 137 / SF10 (Permanent Record)</option>
+<option>Form 138 / SF9 (Report Card)</option>
+<option>Certificate of Good Moral</option>
+<option>Certificate of Graduation</option>
+<option>Request / Transfer Letter</option>
+</select>
+
+<textarea id="reason" required placeholder="Reason" class="w-full p-3 border rounded"></textarea>
+
+<label class="font-bold">Government ID</label>
+<input id="govtId" type="file" accept="image/*" required>
+
+<label class="font-bold">Selfie</label>
+<input id="selfie" type="file" accept="image/*">
+
+<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">
+Use Camera
+</button>
+
+<video id="video" class="hidden mt-2 w-full rounded" autoplay playsinline></video>
+
+<button type="button" id="captureBtn" onclick="capture()" class="hidden bg-red-600 text-white px-3 py-1 mt-2">
+Capture
+</button>
+
+<canvas id="canvas" class="hidden"></canvas>
+
+<button class="w-full bg-green-700 text-white p-3 rounded font-bold">
+Submit Request
+</button>
+
+</form>
+
+<p id="msg" class="mt-4"></p>
+</section>
+
+<!-- TRACK -->
+<section id="track" class="hidden max-w-xl mx-auto p-6">
+<h1 class="text-xl font-bold mb-3">Track Request</h1>
+<input id="trackId" placeholder="BNHS-XXXXX" class="w-full p-3 border mb-3">
+<button onclick="track()" class="w-full bg-green-700 text-white p-3">Check</button>
+<p id="status" class="mt-3 font-bold"></p>
+</section>
+
+<!-- ADMIN -->
+<section id="admin" class="hidden max-w-sm mx-auto p-6">
+<h1 class="text-xl font-bold mb-3">Admin Login</h1>
+<input id="adminEmail" placeholder="Email" class="w-full p-3 border mb-2">
+<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border mb-3">
+<button onclick="login()" class="w-full bg-black text-white p-3">Login</button>
+</section>
+
+<script>
+const URL="https://script.google.com/macros/s/AKfycbzslIE8UmCW8ASJb2JVB6gM2I-G9H2F62NF7czeR4pBcqNJDmBfdk0Qf9i_QeQdvu0D/exec";
+
+/* NAV */
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+}
+
+/* CAMERA */
+let stream;
+
+async function openCamera(){
+video.classList.remove("hidden");
+captureBtn.classList.remove("hidden");
+
+stream = await navigator.mediaDevices.getUserMedia({
+video:{ facingMode:{ ideal:"environment" } }
+});
+
+video.srcObject = stream;
+video.style.transform="none"; // NOT mirrored
+}
+
+function capture(){
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+
+const ctx = canvas.getContext("2d");
+ctx.drawImage(video,0,0);
+
+selfie.value = ""; // clear file input
+
+/* STOP CAMERA */
+stream.getTracks().forEach(track => track.stop());
+
+video.classList.add("hidden");
+captureBtn.classList.add("hidden");
+}
+
+/* CONVERT IMAGE TO BASE64 */
+function toBase64(file){
+return new Promise((resolve)=>{
+let reader = new FileReader();
+reader.onload = ()=> resolve(reader.result);
+reader.readAsDataURL(file);
+});
+}
+
+/* SUBMIT */
+form.onsubmit = async (e)=>{
+e.preventDefault();
+
+let id="BNHS-"+Math.floor(10000+Math.random()*90000);
+
+let govtFile = govtId.files[0];
+let selfieFile = selfie.files[0];
+
+let govtBase64 = govtFile ? await toBase64(govtFile) : "";
+let selfieBase64 = "";
+
+if(canvas.width>0){
+selfieBase64 = canvas.toDataURL("image/png");
+}else if(selfieFile){
+selfieBase64 = await toBase64(selfieFile);
+}
+
+await fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+action:"submit",
+trackingId:id,
+name:name.value,
+email:email.value,
+contact:contact.value,
+document:document.value,
+reason:reason.value,
+govtId:govtBase64,
+selfie:selfieBase64
+})
+});
+
+msg.innerHTML="✅ Tracking ID: <b>"+id+"</b>";
+form.reset();
+};
+
+/* TRACK */
+async function track(){
+let res = await fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+action:"track",
+trackingId:trackId.value
+})
+});
+let data = await res.json();
+status.innerText = data.status || "Not Found";
+}
+
+/* ADMIN LOGIN */
+async function login(){
+let res = await fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+action:"login",
+email:adminEmail.value,
+password:adminPass.value
+})
+});
+if(await res.text()=="authorized"){
+alert("Login Success");
+}else{
+alert("Denied");
+}
+}
+</script>
+
+</body>
+</html>
