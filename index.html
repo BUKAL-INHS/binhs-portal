@@ -17,12 +17,11 @@ background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
 overflow-x:hidden;
 }
 
-/* Leaves */
 .leaf{
 position:fixed;
-width:20px;height:20px;
+width:25px;height:25px;
 background:#13633d;
-opacity:.2;
+opacity:.25;
 border-radius:0 100% 0 100%;
 animation:fall linear infinite;
 }
@@ -40,9 +39,9 @@ backdrop-filter:blur(10px);
 
 <body class="font-sans text-gray-800">
 
-<!-- Leaves -->
+<!-- LEAVES -->
 <script>
-for(let i=0;i<5;i++){
+for(let i=0;i<6;i++){
 let leaf=document.createElement("div");
 leaf.className="leaf";
 leaf.style.left=Math.random()*100+"%";
@@ -61,9 +60,7 @@ document.body.appendChild(leaf);
 <section id="request" class="max-w-2xl mx-auto p-6">
 <div class="glass p-6 rounded-2xl shadow-xl text-center">
 
-<img src="logo.png" class="w-28 mx-auto mb-4">
-
-<h1 class="text-3xl font-black">E-DocuQuest</h1>
+<h1 class="text-3xl font-black mb-2">E-DocuQuest</h1>
 <p class="text-green-800 text-sm mb-6">Bukal Integrated National High School</p>
 
 <form id="form" class="space-y-4 text-left">
@@ -83,18 +80,46 @@ document.body.appendChild(leaf);
 
 <textarea id="reason" placeholder="Reason for Request" required class="w-full p-3 border rounded-xl"></textarea>
 
-<!-- FILES -->
-<input id="govtId" type="file" accept="image/*" required class="w-full">
-<input id="selfie" type="file" accept="image/*" class="w-full">
+<!-- GOV ID -->
+<div class="border-2 border-dashed border-green-400 p-4 rounded-xl text-center bg-green-50">
+<p class="font-bold">Government ID</p>
+<input id="govtId" type="file" accept="image/*" class="hidden">
+<div onclick="govtId.click()" class="cursor-pointer">
+<p class="text-sm text-gray-500">Click to upload</p>
+<img id="idPreview" class="mx-auto mt-2 hidden max-h-40 rounded shadow">
+</div>
+</div>
 
-<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">Use Camera</button>
-<video id="video" class="hidden w-full mt-2" autoplay></video>
-<button id="captureBtn" type="button" onclick="capture()" class="hidden bg-red-600 text-white px-3 py-1 mt-2">Capture</button>
+<!-- SELFIE -->
+<div class="border-2 border-dashed border-green-400 p-4 rounded-xl text-center bg-green-50">
+<p class="font-bold">Selfie Verification</p>
 
-<button class="w-full bg-green-700 text-white p-3 rounded-xl font-bold">Submit Request</button>
+<div class="flex justify-center gap-2 mt-2">
+<button type="button" onclick="selfie.click()" class="bg-green-700 text-white px-3 py-1 rounded">Upload</button>
+<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">Camera</button>
+</div>
+
+<input id="selfie" type="file" accept="image/*" class="hidden">
+
+<video id="video" class="hidden mx-auto mt-3 rounded max-h-40 border" autoplay playsinline></video>
+
+<button id="captureBtn" onclick="capture()" type="button"
+class="hidden bg-red-600 text-white px-3 py-1 mt-2 rounded">
+Capture
+</button>
+
+<canvas id="canvas" class="hidden"></canvas>
+
+<img id="selfiePreview" class="mx-auto mt-2 hidden max-h-40 rounded shadow">
+</div>
+
+<button class="w-full bg-green-700 text-white p-3 rounded-xl font-bold">
+Submit Request
+</button>
+
 </form>
 
-<div id="msg" class="mt-4"></div>
+<div id="msg" class="mt-4 text-center"></div>
 
 </div>
 </section>
@@ -103,5 +128,113 @@ document.body.appendChild(leaf);
 <section id="track" class="hidden-section max-w-xl mx-auto p-6">
 <div class="glass p-6 rounded-xl text-center">
 <input id="trackId" placeholder="BNHS-XXXXX" class="w-full p-3 border mb-3 text-center">
-<button onclick="track()" class="bg-green-700 text-white p-3 w-full">Check Status</button>
-<p id="status" class="mt-4"></p>
+<button onclick="track()" class="bg-green-700 text-white p-3 w-full rounded">
+Check Status
+</button>
+<p id="status" class="mt-4 font-bold text-green-800"></p>
+</div>
+</section>
+
+<!-- ADMIN LOGIN -->
+<section id="admin-login" class="hidden-section max-w-sm mx-auto p-6">
+<div class="glass p-6 rounded-xl">
+<input id="adminEmail" placeholder="Admin Email" class="w-full p-3 border mb-3">
+<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border mb-3">
+<button onclick="login()" class="w-full bg-black text-white p-3 rounded">Login</button>
+</div>
+</section>
+
+<script>
+const URL="https://script.google.com/macros/s/AKfycbzslIE8UmCW8ASJb2JVB6gM2I-G9H2F62NF7czeR4pBcqNJDmBfdk0Qf9i_QeQdvu0D/exec";
+
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden-section"));
+document.getElementById(id).classList.remove("hidden-section");
+}
+
+/* PREVIEW */
+govtId.onchange=()=>{idPreview.src=URL.createObjectURL(govtId.files[0]);idPreview.classList.remove("hidden");};
+selfie.onchange=()=>{selfiePreview.src=URL.createObjectURL(selfie.files[0]);selfiePreview.classList.remove("hidden");};
+
+/* CAMERA FIXED */
+let stream;
+
+async function openCamera(){
+video.classList.remove("hidden");
+captureBtn.classList.remove("hidden");
+
+stream = await navigator.mediaDevices.getUserMedia({ video: true });
+video.srcObject = stream;
+
+/* REMOVE MIRROR */
+video.style.transform = "scaleX(1)";
+}
+
+function capture(){
+const ctx = canvas.getContext("2d");
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+ctx.drawImage(video,0,0);
+
+selfiePreview.src = canvas.toDataURL("image/png");
+selfiePreview.classList.remove("hidden");
+
+/* STOP CAMERA (FIX LAG) */
+stream.getTracks().forEach(track => track.stop());
+
+video.classList.add("hidden");
+captureBtn.classList.add("hidden");
+}
+
+/* SUBMIT */
+form.onsubmit = async e=>{
+e.preventDefault();
+
+let id="BNHS-"+Math.floor(10000+Math.random()*90000);
+
+let f=new FormData();
+f.append("trackingId",id);
+f.append("name",name.value);
+f.append("email",email.value);
+f.append("contact",contact.value);
+f.append("document",document.value);
+f.append("reason",reason.value);
+f.append("govtId",govtId.files[0]);
+
+if(canvas.width>0){
+let blob=await (await fetch(canvas.toDataURL())).blob();
+f.append("selfie",blob,"selfie.png");
+}else{
+f.append("selfie",selfie.files[0]);
+}
+
+await fetch(URL,{method:"POST",body:f});
+
+msg.innerHTML="✅ Tracking ID: <b>"+id+"</b>";
+form.reset();
+};
+
+/* TRACK */
+async function track(){
+let r=await fetch(URL,{method:"POST",body:JSON.stringify({action:"track",trackingId:trackId.value})});
+let d=await r.json();
+status.innerText=d.status;
+}
+
+/* LOGIN */
+async function login(){
+let r=await fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+action:"login",
+email:adminEmail.value,
+password:adminPass.value
+})
+});
+if(await r.text()=="authorized") alert("Login success");
+else alert("Denied");
+}
+</script>
+
+</body>
+</html>
