@@ -10,11 +10,20 @@
 .hidden{display:none;}
 body{
 background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
+font-family:sans-serif;
+}
+.upload-box{
+border:2px dashed #16a34a;
+padding:15px;
+border-radius:12px;
+background:#f0fdf4;
+text-align:center;
+cursor:pointer;
 }
 </style>
 </head>
 
-<body class="font-sans text-gray-800">
+<body class="text-gray-800">
 
 <!-- NAV -->
 <nav class="p-4 bg-white text-center shadow space-x-4">
@@ -25,9 +34,10 @@ background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
 
 <!-- REQUEST -->
 <section id="request" class="max-w-xl mx-auto p-6">
-<h1 class="text-2xl font-bold mb-4">Document Request</h1>
 
-<form id="form" class="space-y-3">
+<h1 class="text-2xl font-bold mb-4 text-center">E-DocuQuest Request</h1>
+
+<form id="form" class="space-y-4">
 
 <input id="name" required placeholder="Full Name" class="w-full p-3 border rounded">
 <input id="email" required placeholder="Email" class="w-full p-3 border rounded">
@@ -44,23 +54,31 @@ background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
 
 <textarea id="reason" required placeholder="Reason" class="w-full p-3 border rounded"></textarea>
 
-<label class="font-bold">Government ID</label>
-<input id="govtId" type="file" accept="image/*" required>
+<!-- ID -->
+<div class="upload-box" onclick="govtId.click()">
+<p class="font-bold">Upload Government / School ID</p>
+<input id="govtId" type="file" accept="image/*" hidden required>
+<img id="idPreview" class="hidden mt-2 mx-auto max-h-40 rounded shadow">
+</div>
 
-<label class="font-bold">Selfie</label>
-<input id="selfie" type="file" accept="image/*">
+<!-- SELFIE -->
+<div class="upload-box">
+<p class="font-bold">Selfie Verification</p>
 
-<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">
-Use Camera
-</button>
+<div class="flex justify-center gap-2 mt-2">
+<button type="button" onclick="selfie.click()" class="bg-green-700 text-white px-3 py-1 rounded">Upload</button>
+<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">Camera</button>
+</div>
 
-<video id="video" class="hidden mt-2 w-full rounded" autoplay playsinline></video>
+<input id="selfie" type="file" accept="image/*" hidden>
 
-<button type="button" id="captureBtn" onclick="capture()" class="hidden bg-red-600 text-white px-3 py-1 mt-2">
-Capture
-</button>
+<video id="video" class="hidden mt-3 w-full rounded"></video>
+<button type="button" id="captureBtn" onclick="capture()" class="hidden bg-red-600 text-white px-3 py-1 mt-2 rounded">Capture</button>
+
+<img id="selfiePreview" class="hidden mt-2 mx-auto max-h-40 rounded shadow">
 
 <canvas id="canvas" class="hidden"></canvas>
+</div>
 
 <button class="w-full bg-green-700 text-white p-3 rounded font-bold">
 Submit Request
@@ -68,7 +86,8 @@ Submit Request
 
 </form>
 
-<p id="msg" class="mt-4"></p>
+<p id="msg" class="mt-4 text-center font-bold"></p>
+
 </section>
 
 <!-- TRACK -->
@@ -79,22 +98,58 @@ Submit Request
 <p id="status" class="mt-3 font-bold"></p>
 </section>
 
-<!-- ADMIN -->
+<!-- ADMIN LOGIN -->
 <section id="admin" class="hidden max-w-sm mx-auto p-6">
-<h1 class="text-xl font-bold mb-3">Admin Login</h1>
+<h1 class="text-xl font-bold mb-3 text-center">Admin Secure Login</h1>
+
 <input id="adminEmail" placeholder="Email" class="w-full p-3 border mb-2">
-<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border mb-3">
-<button onclick="login()" class="w-full bg-black text-white p-3">Login</button>
+<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border mb-2">
+<input id="adminKey" placeholder="Pass Key (BINHS-2026)" class="w-full p-3 border mb-3">
+
+<button onclick="login()" class="w-full bg-black text-white p-3 rounded">
+Login
+</button>
+</section>
+
+<!-- ADMIN PANEL -->
+<section id="adminPanel" class="hidden max-w-6xl mx-auto p-6">
+
+<h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+
+<button onclick="loadData()" class="bg-green-700 text-white px-4 py-2 mb-4">
+Refresh
+</button>
+
+<div class="overflow-auto">
+<table class="w-full border text-sm">
+<thead class="bg-green-700 text-white">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Document</th>
+<th>Status</th>
+<th>Verified</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+</div>
+
 </section>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbzslIE8UmCW8ASJb2JVB6gM2I-G9H2F62NF7czeR4pBcqNJDmBfdk0Qf9i_QeQdvu0D/exec";
+const URL="https://script.google.com/macros/s/AKfycbwEol8yDm-nvykMZGieGDr9-sBXrU6NXw5dfDzIE3P4-FgALH68TRYCv3trxjBlTL6r/exec";
 
 /* NAV */
 function show(id){
 document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
 document.getElementById(id).classList.remove("hidden");
 }
+
+/* PREVIEW */
+govtId.onchange=()=>{idPreview.src=URL.createObjectURL(govtId.files[0]);idPreview.classList.remove("hidden");};
+selfie.onchange=()=>{selfiePreview.src=URL.createObjectURL(selfie.files[0]);selfiePreview.classList.remove("hidden");};
 
 /* CAMERA */
 let stream;
@@ -108,7 +163,6 @@ video:{ facingMode:{ ideal:"environment" } }
 });
 
 video.srcObject = stream;
-video.style.transform="none"; // NOT mirrored
 }
 
 function capture(){
@@ -118,40 +172,37 @@ canvas.height = video.videoHeight;
 const ctx = canvas.getContext("2d");
 ctx.drawImage(video,0,0);
 
-selfie.value = ""; // clear file input
+selfiePreview.src = canvas.toDataURL("image/png");
+selfiePreview.classList.remove("hidden");
 
-/* STOP CAMERA */
-stream.getTracks().forEach(track => track.stop());
+stream.getTracks().forEach(t=>t.stop());
 
 video.classList.add("hidden");
 captureBtn.classList.add("hidden");
 }
 
-/* CONVERT IMAGE TO BASE64 */
+/* BASE64 */
 function toBase64(file){
-return new Promise((resolve)=>{
-let reader = new FileReader();
-reader.onload = ()=> resolve(reader.result);
+return new Promise(resolve=>{
+let reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
 reader.readAsDataURL(file);
 });
 }
 
 /* SUBMIT */
-form.onsubmit = async (e)=>{
+form.onsubmit=async(e)=>{
 e.preventDefault();
 
 let id="BNHS-"+Math.floor(10000+Math.random()*90000);
 
-let govtFile = govtId.files[0];
-let selfieFile = selfie.files[0];
-
-let govtBase64 = govtFile ? await toBase64(govtFile) : "";
-let selfieBase64 = "";
+let govt=await toBase64(govtId.files[0]);
+let selfieData="";
 
 if(canvas.width>0){
-selfieBase64 = canvas.toDataURL("image/png");
-}else if(selfieFile){
-selfieBase64 = await toBase64(selfieFile);
+selfieData=canvas.toDataURL("image/png");
+}else if(selfie.files[0]){
+selfieData=await toBase64(selfie.files[0]);
 }
 
 await fetch(URL,{
@@ -164,42 +215,87 @@ email:email.value,
 contact:contact.value,
 document:document.value,
 reason:reason.value,
-govtId:govtBase64,
-selfie:selfieBase64
+govtId:govt,
+selfie:selfieData
 })
 });
 
-msg.innerHTML="✅ Tracking ID: <b>"+id+"</b>";
+msg.innerHTML="✅ Tracking ID: "+id;
 form.reset();
 };
 
 /* TRACK */
 async function track(){
-let res = await fetch(URL,{
+let r=await fetch(URL,{
 method:"POST",
-body:JSON.stringify({
-action:"track",
-trackingId:trackId.value
-})
+body:JSON.stringify({action:"track",trackingId:trackId.value})
 });
-let data = await res.json();
-status.innerText = data.status || "Not Found";
+let d=await r.json();
+status.innerText=d.status||"Not Found";
 }
 
-/* ADMIN LOGIN */
+/* LOGIN */
 async function login(){
-let res = await fetch(URL,{
+let r=await fetch(URL,{
 method:"POST",
 body:JSON.stringify({
 action:"login",
 email:adminEmail.value,
-password:adminPass.value
+password:adminPass.value,
+key:adminKey.value
 })
 });
-if(await res.text()=="authorized"){
-alert("Login Success");
+
+if(await r.text()=="authorized"){
+show("adminPanel");
+loadData();
 }else{
 alert("Denied");
+}
+}
+
+/* LOAD ADMIN */
+async function loadData(){
+let res=await fetch(URL,{
+method:"POST",
+body:JSON.stringify({action:"loadAll"})
+});
+let data=await res.json();
+
+table.innerHTML="";
+
+data.slice(1).reverse().forEach(row=>{
+table.innerHTML+=`
+<tr class="border">
+<td>${row[0]}</td>
+<td>${row[2]}</td>
+<td>${row[5]}</td>
+<td>${row[9]}</td>
+<td>${row[10]}</td>
+<td>
+<button onclick="verify('${row[0]}')" class="bg-blue-500 text-white px-2">Verify</button>
+<button onclick="archive('${row[0]}')" class="bg-yellow-500 text-white px-2">Archive</button>
+<button onclick="del('${row[0]}')" class="bg-red-600 text-white px-2">Delete</button>
+</td>
+</tr>
+`;
+});
+}
+
+async function verify(id){
+await fetch(URL,{method:"POST",body:JSON.stringify({action:"verify",trackingId:id})});
+loadData();
+}
+
+async function archive(id){
+await fetch(URL,{method:"POST",body:JSON.stringify({action:"archive",trackingId:id})});
+loadData();
+}
+
+async function del(id){
+if(confirm("Delete?")){
+await fetch(URL,{method:"POST",body:JSON.stringify({action:"delete",trackingId:id})});
+loadData();
 }
 }
 </script>
