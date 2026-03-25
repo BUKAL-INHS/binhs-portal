@@ -5,298 +5,238 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>E-DocuQuest | Bukal INHS</title>
 <script src="https://cdn.tailwindcss.com"></script>
-
 <style>
-.hidden{display:none;}
-body{
-background:linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
-font-family:sans-serif;
-}
-.upload-box{
-border:2px dashed #16a34a;
-padding:15px;
-border-radius:12px;
-background:#f0fdf4;
-text-align:center;
-cursor:pointer;
-}
+  body { font-family: sans-serif; background: linear-gradient(135deg, #dcfce7, #bbf7d0, #86efac); min-height:100vh; }
+  .hidden-section { display:none; }
+  .nav-btn { transition: all 0.2s; border-bottom:2px solid transparent; }
+  .nav-btn:hover { color:#064e3b; border-color:#064e3b; }
+  .active-nav { color:#064e3b; border-color:#064e3b; font-weight:bold; }
+  .glass-panel { background: rgba(255,255,255,0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 </style>
 </head>
+<body>
 
-<body class="text-gray-800">
-
-<!-- NAV -->
-<nav class="p-4 bg-white text-center shadow space-x-4">
-<button onclick="show('request')">Request</button>
-<button onclick="show('track')">Track</button>
-<button onclick="show('admin')">Admin</button>
+<nav class="bg-white/70 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
+  <button onclick="showSection('request')" id="btn-request" class="nav-btn active-nav">Request</button>
+  <button onclick="showSection('track')" id="btn-track" class="nav-btn">Track Progress</button>
+  <button onclick="showSection('admin-login')" id="btn-admin" class="nav-btn">Admin Access</button>
 </nav>
 
-<!-- REQUEST -->
-<section id="request" class="max-w-xl mx-auto p-6">
+<!-- REQUEST FORM -->
+<section id="request" class="max-w-2xl mx-auto py-12 px-4">
+  <div class="glass-panel rounded-3xl shadow-2xl p-8 border-t-8 border-[#13633d] text-center">
+    <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-2">E-DocuQuest</h1>
+    <p class="text-[#13633d] font-bold uppercase tracking-wider text-sm mb-6">Bukal Integrated National High School</p>
 
-<h1 class="text-2xl font-bold mb-4 text-center">E-DocuQuest Request</h1>
+    <form id="requestForm" class="space-y-4 text-left">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input id="name" type="text" placeholder="Full Name" required class="w-full p-4 rounded-xl border border-gray-200 outline-none">
+        <input id="email" type="email" placeholder="Email" required class="w-full p-4 rounded-xl border border-gray-200 outline-none">
+      </div>
+      <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 rounded-xl border border-gray-200 outline-none">
+      <select id="document" class="w-full p-4 rounded-xl border border-gray-200 outline-none" required>
+        <option value="">Select Document...</option>
+        <option>Form 137/SF10 (Permanent Record)</option>
+        <option>Form 138/SF9 (Report Card)</option>
+        <option>Certificate of Good Moral</option>
+        <option>Certificate of Graduation</option>
+        <option>Request/Transfer Letter</option>
+      </select>
+      <textarea id="reason" placeholder="Reason for Request" rows="3" required class="w-full p-4 rounded-xl border border-gray-200 outline-none"></textarea>
+      
+      <!-- GOVERNMENT/SCHOOL ID UPLOAD -->
+      <label class="block text-sm font-bold">Upload ID (Government/School)</label>
+      <input type="file" id="govtId" accept="image/*" class="w-full p-2 border rounded-lg">
 
-<form id="form" class="space-y-4">
+      <!-- SELFIE -->
+      <label class="block text-sm font-bold">Upload Selfie</label>
+      <input type="file" id="selfie" accept="image/*" class="w-full p-2 border rounded-lg">
 
-<input id="name" required placeholder="Full Name" class="w-full p-3 border rounded">
-<input id="email" required placeholder="Email" class="w-full p-3 border rounded">
-<input id="contact" placeholder="Contact Number" class="w-full p-3 border rounded">
+      <!-- CAMERA PREVIEW -->
+      <label class="block text-sm font-bold">Take Selfie</label>
+      <video id="cameraPreview" autoplay playsinline class="w-full rounded-lg border mb-2"></video>
+      <button type="button" onclick="takeSnapshot()" class="bg-[#13633d] text-white py-2 px-4 rounded-lg mb-4">Take Snapshot</button>
+      <canvas id="snapshotCanvas" class="hidden"></canvas>
 
-<select id="document" required class="w-full p-3 border rounded">
-<option value="">Select Document</option>
-<option>Form 137 / SF10 (Permanent Record)</option>
-<option>Form 138 / SF9 (Report Card)</option>
-<option>Certificate of Good Moral</option>
-<option>Certificate of Graduation</option>
-<option>Request / Transfer Letter</option>
-</select>
-
-<textarea id="reason" required placeholder="Reason" class="w-full p-3 border rounded"></textarea>
-
-<!-- ID -->
-<div class="upload-box" onclick="govtId.click()">
-<p class="font-bold">Upload Government / School ID</p>
-<input id="govtId" type="file" accept="image/*" hidden required>
-<img id="idPreview" class="hidden mt-2 mx-auto max-h-40 rounded shadow">
-</div>
-
-<!-- SELFIE -->
-<div class="upload-box">
-<p class="font-bold">Selfie Verification</p>
-
-<div class="flex justify-center gap-2 mt-2">
-<button type="button" onclick="selfie.click()" class="bg-green-700 text-white px-3 py-1 rounded">Upload</button>
-<button type="button" onclick="openCamera()" class="bg-black text-white px-3 py-1 rounded">Camera</button>
-</div>
-
-<input id="selfie" type="file" accept="image/*" hidden>
-
-<video id="video" class="hidden mt-3 w-full rounded"></video>
-<button type="button" id="captureBtn" onclick="capture()" class="hidden bg-red-600 text-white px-3 py-1 mt-2 rounded">Capture</button>
-
-<img id="selfiePreview" class="hidden mt-2 mx-auto max-h-40 rounded shadow">
-
-<canvas id="canvas" class="hidden"></canvas>
-</div>
-
-<button class="w-full bg-green-700 text-white p-3 rounded font-bold">
-Submit Request
-</button>
-
-</form>
-
-<p id="msg" class="mt-4 text-center font-bold"></p>
-
+      <button type="submit" id="submitBtn" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold">Submit Request</button>
+    </form>
+    <div id="requestFeedback" class="mt-6"></div>
+  </div>
 </section>
 
-<!-- TRACK -->
-<section id="track" class="hidden max-w-xl mx-auto p-6">
-<h1 class="text-xl font-bold mb-3">Track Request</h1>
-<input id="trackId" placeholder="BNHS-XXXXX" class="w-full p-3 border mb-3">
-<button onclick="track()" class="w-full bg-green-700 text-white p-3">Check</button>
-<p id="status" class="mt-3 font-bold"></p>
+<!-- TRACK SYSTEM -->
+<section id="track" class="hidden-section max-w-xl mx-auto py-12 px-4">
+  <div class="glass-panel p-8 rounded-2xl shadow-2xl text-center">
+    <h2 class="text-2xl font-bold mb-2">Track Your Document</h2>
+    <input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 rounded-xl border border-gray-200 text-center mb-4 uppercase tracking-widest">
+    <button onclick="handleTrack()" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold mb-4">Check Status</button>
+    <div id="trackDisplay" class="hidden-section p-6 bg-emerald-50/80 rounded-2xl">
+      <p id="trackHeaderMessage" class="text-sm font-bold mb-4"></p>
+      <div class="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden">
+        <div id="trackBar" class="bg-[#13633d] h-full transition-all duration-1000" style="width:0%"></div>
+      </div>
+      <p class="text-2xl font-black text-[#13633d] italic uppercase" id="trackStatusText"></p>
+    </div>
+  </div>
 </section>
 
 <!-- ADMIN LOGIN -->
-<section id="admin" class="hidden max-w-sm mx-auto p-6">
-<h1 class="text-xl font-bold mb-3 text-center">Admin Secure Login</h1>
-
-<input id="adminEmail" placeholder="Email" class="w-full p-3 border mb-2">
-<input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border mb-2">
-<input id="adminKey" placeholder="Pass Key (BINHS-2026)" class="w-full p-3 border mb-3">
-
-<button onclick="login()" class="w-full bg-black text-white p-3 rounded">
-Login
-</button>
+<section id="admin-login" class="hidden-section max-w-sm mx-auto py-12 px-4">
+  <div class="glass-panel p-8 rounded-2xl shadow-lg">
+    <h2 class="text-xl font-bold mb-4 text-center">Admin Access</h2>
+    <input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3">
+    <input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded-lg mb-4">
+    <button onclick="handleAdminLogin()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Verify</button>
+  </div>
 </section>
 
 <!-- ADMIN PANEL -->
-<section id="adminPanel" class="hidden max-w-6xl mx-auto p-6">
-
-<h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
-
-<button onclick="loadData()" class="bg-green-700 text-white px-4 py-2 mb-4">
-Refresh
-</button>
-
-<div class="overflow-auto">
-<table class="w-full border text-sm">
-<thead class="bg-green-700 text-white">
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Document</th>
-<th>Status</th>
-<th>Verified</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="table"></tbody>
-</table>
-</div>
-
+<section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
+  <div class="glass-panel p-6 rounded-2xl shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold">Dashboard</h2>
+      <button onclick="loadAdminData()" class="bg-[#13633d] text-white px-4 py-2 rounded-lg font-bold">Refresh</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left bg-white/50">
+        <thead>
+          <tr class="bg-[#13633d] text-white font-bold">
+            <th class="p-4">ID</th>
+            <th class="p-4">Student</th>
+            <th class="p-4">Document</th>
+            <th class="p-4 text-center">Status</th>
+            <th class="p-4 text-center">Update</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody" class="text-sm"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbwEol8yDm-nvykMZGieGDr9-sBXrU6NXw5dfDzIE3P4-FgALH68TRYCv3trxjBlTL6r/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEol8yDm-nvykMZGieGDr9-sBXrU6NXw5dfDzIE3P4-FgALH68TRYCv3trxjBlTL6r/exec";
 
-/* NAV */
-function show(id){
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.add('hidden-section'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active-nav'));
+  document.getElementById(id).classList.remove('hidden-section');
+  const navBtn = document.getElementById('btn-'+id);
+  if(navBtn) navBtn.classList.add('active-nav');
 }
 
-/* PREVIEW */
-govtId.onchange=()=>{idPreview.src=URL.createObjectURL(govtId.files[0]);idPreview.classList.remove("hidden");};
-selfie.onchange=()=>{selfiePreview.src=URL.createObjectURL(selfie.files[0]);selfiePreview.classList.remove("hidden");};
+// REQUEST FORM SUBMIT
+document.getElementById('requestForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const feedback = document.getElementById('requestFeedback');
+  btn.disabled = true; btn.innerText = "Processing...";
 
-/* CAMERA */
-let stream;
+  const trackingId = "BNHS-" + Math.floor(10000+Math.random()*90000);
 
-async function openCamera(){
-video.classList.remove("hidden");
-captureBtn.classList.remove("hidden");
+  // Get files as base64
+  const govtIdFile = document.getElementById('govtId').files[0];
+  const selfieFile = document.getElementById('selfie').files[0];
 
-stream = await navigator.mediaDevices.getUserMedia({
-video:{ facingMode:{ ideal:"environment" } }
+  const toBase64 = file => new Promise((resolve,reject)=>{
+    if(!file) resolve("");
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = error=>reject(error);
+  });
+
+  const govtId = await toBase64(govtIdFile);
+  const selfie = await toBase64(selfieFile);
+
+  try {
+    await fetch(SCRIPT_URL,{
+      method:'POST',
+      body:JSON.stringify({
+        action:'submit',
+        trackingId, 
+        name:document.getElementById('name').value,
+        email:document.getElementById('email').value,
+        contact:document.getElementById('contact').value,
+        document:document.getElementById('document').value,
+        reason:document.getElementById('reason').value,
+        govtId, selfie
+      })
+    });
+    feedback.innerHTML=`<div class="bg-[#13633d] p-6 rounded-2xl text-white text-center"><p class="font-bold text-xs uppercase mb-1 tracking-widest">ID Recorded:</p><p class="text-4xl font-mono font-black my-2">${trackingId}</p></div>`;
+    document.getElementById('requestForm').reset();
+  }catch(err){ alert("Error connecting."); }
+  btn.disabled=false; btn.innerText="Submit Request";
 });
 
-video.srcObject = stream;
+// TRACK SYSTEM
+async function handleTrack(){
+  const id = document.getElementById('trackId').value.trim().toUpperCase();
+  if(!id) return;
+  const btn = document.querySelector('#track button') || document.getElementById('trackBtn');
+  btn.innerText="Finding...";
+  try{
+    const res = await fetch(SCRIPT_URL,{
+      method:'POST',
+      body:JSON.stringify({action:"track", trackingId:id})
+    });
+    const data = await res.json();
+    if(data.status==="Not Found"){ alert("ID not found"); btn.innerText="Check Status"; return; }
+    document.getElementById('trackDisplay').classList.remove('hidden-section');
+    document.getElementById('trackStatusText').innerText=data.status;
+    const h = document.getElementById('trackHeaderMessage');
+    const b = document.getElementById('trackBar');
+    if(data.status==="Processing"){ h.innerText="Your document is being processed."; b.style.width="40%"; }
+    else if(data.status==="Ready for Pickup"){ h.innerText="Ready for pick-up."; b.style.width="85%"; }
+    else if(data.status==="Received"){ h.innerText="Document complete."; b.style.width="100%"; }
+    else{ h.innerText="Pending"; b.style.width="15%"; }
+  }catch(e){ alert("Error"); }
+  btn.innerText="Check Status";
 }
 
-function capture(){
-canvas.width = video.videoWidth;
-canvas.height = video.videoHeight;
+// CAMERA
+const video = document.getElementById('cameraPreview');
+navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}})
+.then(stream=>{ video.srcObject=stream; })
+.catch(e=>console.log("Camera error",e));
 
-const ctx = canvas.getContext("2d");
-ctx.drawImage(video,0,0);
-
-selfiePreview.src = canvas.toDataURL("image/png");
-selfiePreview.classList.remove("hidden");
-
-stream.getTracks().forEach(t=>t.stop());
-
-video.classList.add("hidden");
-captureBtn.classList.add("hidden");
+function takeSnapshot(){
+  const canvas = document.getElementById('snapshotCanvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video,0,0);
+  const dataUrl = canvas.toDataURL('image/png');
+  document.getElementById('selfie').value = ""; // optional: reset file input
+  alert("Snapshot taken! It will be submitted with the form.");
 }
 
-/* BASE64 */
-function toBase64(file){
-return new Promise(resolve=>{
-let reader=new FileReader();
-reader.onload=()=>resolve(reader.result);
-reader.readAsDataURL(file);
-});
+// ADMIN LOGIN
+async function handleAdminLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass = document.getElementById('adminPass').value.trim();
+  if(pass !== "BINHS-2026"){ alert("Wrong password"); return; }
+  showSection('admin-panel');
+  loadAdminData();
 }
 
-/* SUBMIT */
-form.onsubmit=async(e)=>{
-e.preventDefault();
-
-let id="BNHS-"+Math.floor(10000+Math.random()*90000);
-
-let govt=await toBase64(govtId.files[0]);
-let selfieData="";
-
-if(canvas.width>0){
-selfieData=canvas.toDataURL("image/png");
-}else if(selfie.files[0]){
-selfieData=await toBase64(selfie.files[0]);
+// LOAD ADMIN DATA
+async function loadAdminData(){
+  const body = document.getElementById('adminTableBody');
+  body.innerHTML="<tr><td colspan='5' class='p-10 text-center'>Syncing...</td></tr>";
+  try{
+    const res = await fetch(SCRIPT_URL,{method:'POST', body:JSON.stringify({action:"loadAll"})});
+    const data = await res.json();
+    body.innerHTML="";
+    data.reverse().forEach(row=>{
+      body.innerHTML+=`<tr class="border-b hover:bg-emerald-50 transition"><td class="p-4 font-mono font-bold text-xs">${row[0]}</td><td class="p-4"><b>${row[2]}</b><br><span class="text-[10px] text-gray-400">${row[3]}</span></td><td class="p-4 text-[10px] font-semibold">${row[5]}</td><td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-tighter">${row[9]}</span></td><td class="p-4 text-center"><select onchange="updateStatus('${row[0]}',this.value)" class="text-[10px] border rounded p-1 bg-white"><option value="">Select</option><option value="Processing">Processing</option><option value="Ready for Pickup">Ready for Pickup</option><option value="Received">Received</option></select></td></tr>`;
+    });
+  }catch(e){ body.innerHTML="Error loading data."; }
 }
 
-await fetch(URL,{
-method:"POST",
-body:JSON.stringify({
-action:"submit",
-trackingId:id,
-name:name.value,
-email:email.value,
-contact:contact.value,
-document:document.value,
-reason:reason.value,
-govtId:govt,
-selfie:selfieData
-})
-});
-
-msg.innerHTML="✅ Tracking ID: "+id;
-form.reset();
-};
-
-/* TRACK */
-async function track(){
-let r=await fetch(URL,{
-method:"POST",
-body:JSON.stringify({action:"track",trackingId:trackId.value})
-});
-let d=await r.json();
-status.innerText=d.status||"Not Found";
-}
-
-/* LOGIN */
-async function login(){
-let r=await fetch(URL,{
-method:"POST",
-body:JSON.stringify({
-action:"login",
-email:adminEmail.value,
-password:adminPass.value,
-key:adminKey.value
-})
-});
-
-if(await r.text()=="authorized"){
-show("adminPanel");
-loadData();
-}else{
-alert("Denied");
-}
-}
-
-/* LOAD ADMIN */
-async function loadData(){
-let res=await fetch(URL,{
-method:"POST",
-body:JSON.stringify({action:"loadAll"})
-});
-let data=await res.json();
-
-table.innerHTML="";
-
-data.slice(1).reverse().forEach(row=>{
-table.innerHTML+=`
-<tr class="border">
-<td>${row[0]}</td>
-<td>${row[2]}</td>
-<td>${row[5]}</td>
-<td>${row[9]}</td>
-<td>${row[10]}</td>
-<td>
-<button onclick="verify('${row[0]}')" class="bg-blue-500 text-white px-2">Verify</button>
-<button onclick="archive('${row[0]}')" class="bg-yellow-500 text-white px-2">Archive</button>
-<button onclick="del('${row[0]}')" class="bg-red-600 text-white px-2">Delete</button>
-</td>
-</tr>
-`;
-});
-}
-
-async function verify(id){
-await fetch(URL,{method:"POST",body:JSON.stringify({action:"verify",trackingId:id})});
-loadData();
-}
-
-async function archive(id){
-await fetch(URL,{method:"POST",body:JSON.stringify({action:"archive",trackingId:id})});
-loadData();
-}
-
-async function del(id){
-if(confirm("Delete?")){
-await fetch(URL,{method:"POST",body:JSON.stringify({action:"delete",trackingId:id})});
-loadData();
-}
+async function updateStatus(tid,newStatus){
+  if(!newStatus) return;
+  await fetch(SCRIPT_URL,{method:'POST', body:JSON.stringify({action:"update",trackingId:tid,newStatus})});
+  loadAdminData();
 }
 </script>
 
