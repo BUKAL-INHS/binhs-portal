@@ -5,238 +5,177 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>E-DocuQuest | Bukal INHS</title>
 <script src="https://cdn.tailwindcss.com"></script>
+
 <style>
-  body { font-family: sans-serif; background: linear-gradient(135deg, #dcfce7, #bbf7d0, #86efac); min-height:100vh; }
-  .hidden-section { display:none; }
-  .nav-btn { transition: all 0.2s; border-bottom:2px solid transparent; }
-  .nav-btn:hover { color:#064e3b; border-color:#064e3b; }
-  .active-nav { color:#064e3b; border-color:#064e3b; font-weight:bold; }
-  .glass-panel { background: rgba(255,255,255,0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+body{
+  background: linear-gradient(135deg,#dcfce7,#bbf7d0,#86efac);
+  font-family:sans-serif;
+}
+.hidden{display:none;}
+video{width:100%;border-radius:10px;}
 </style>
 </head>
-<body>
 
-<nav class="bg-white/70 backdrop-blur-md shadow-sm p-4 flex justify-center gap-8 sticky top-0 z-50">
-  <button onclick="showSection('request')" id="btn-request" class="nav-btn active-nav">Request</button>
-  <button onclick="showSection('track')" id="btn-track" class="nav-btn">Track Progress</button>
-  <button onclick="showSection('admin-login')" id="btn-admin" class="nav-btn">Admin Access</button>
-</nav>
+<body class="p-6">
 
-<!-- REQUEST FORM -->
-<section id="request" class="max-w-2xl mx-auto py-12 px-4">
-  <div class="glass-panel rounded-3xl shadow-2xl p-8 border-t-8 border-[#13633d] text-center">
-    <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-2">E-DocuQuest</h1>
-    <p class="text-[#13633d] font-bold uppercase tracking-wider text-sm mb-6">Bukal Integrated National High School</p>
+<div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
 
-    <form id="requestForm" class="space-y-4 text-left">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input id="name" type="text" placeholder="Full Name" required class="w-full p-4 rounded-xl border border-gray-200 outline-none">
-        <input id="email" type="email" placeholder="Email" required class="w-full p-4 rounded-xl border border-gray-200 outline-none">
-      </div>
-      <input id="contact" type="text" placeholder="Contact Number" class="w-full p-4 rounded-xl border border-gray-200 outline-none">
-      <select id="document" class="w-full p-4 rounded-xl border border-gray-200 outline-none" required>
-        <option value="">Select Document...</option>
-        <option>Form 137/SF10 (Permanent Record)</option>
-        <option>Form 138/SF9 (Report Card)</option>
-        <option>Certificate of Good Moral</option>
-        <option>Certificate of Graduation</option>
-        <option>Request/Transfer Letter</option>
-      </select>
-      <textarea id="reason" placeholder="Reason for Request" rows="3" required class="w-full p-4 rounded-xl border border-gray-200 outline-none"></textarea>
-      
-      <!-- GOVERNMENT/SCHOOL ID UPLOAD -->
-      <label class="block text-sm font-bold">Upload ID (Government/School)</label>
-      <input type="file" id="govtId" accept="image/*" class="w-full p-2 border rounded-lg">
+<h1 class="text-2xl font-bold text-center mb-4">E-DocuQuest</h1>
 
-      <!-- SELFIE -->
-      <label class="block text-sm font-bold">Upload Selfie</label>
-      <input type="file" id="selfie" accept="image/*" class="w-full p-2 border rounded-lg">
+<!-- REQUEST -->
+<form id="form" class="space-y-3">
 
-      <!-- CAMERA PREVIEW -->
-      <label class="block text-sm font-bold">Take Selfie</label>
-      <video id="cameraPreview" autoplay playsinline class="w-full rounded-lg border mb-2"></video>
-      <button type="button" onclick="takeSnapshot()" class="bg-[#13633d] text-white py-2 px-4 rounded-lg mb-4">Take Snapshot</button>
-      <canvas id="snapshotCanvas" class="hidden"></canvas>
+<input id="name" placeholder="Full Name" required class="w-full p-3 border rounded">
+<input id="email" placeholder="Email" required class="w-full p-3 border rounded">
+<input id="contact" placeholder="Contact" class="w-full p-3 border rounded">
 
-      <button type="submit" id="submitBtn" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold">Submit Request</button>
-    </form>
-    <div id="requestFeedback" class="mt-6"></div>
-  </div>
-</section>
+<select id="document" class="w-full p-3 border rounded" required>
+<option value="">Select Document</option>
+<option>Form 137/SF10 (Permanent Record)</option>
+<option>Form 138/SF9 (Report Card)</option>
+<option>Certificate of Good Moral</option>
+<option>Certificate of Graduation</option>
+<option>Request/Transfer Letter</option>
+</select>
 
-<!-- TRACK SYSTEM -->
-<section id="track" class="hidden-section max-w-xl mx-auto py-12 px-4">
-  <div class="glass-panel p-8 rounded-2xl shadow-2xl text-center">
-    <h2 class="text-2xl font-bold mb-2">Track Your Document</h2>
-    <input id="trackId" type="text" placeholder="BNHS-XXXXX" class="w-full p-4 rounded-xl border border-gray-200 text-center mb-4 uppercase tracking-widest">
-    <button onclick="handleTrack()" class="w-full bg-[#13633d] text-white py-4 rounded-xl font-bold mb-4">Check Status</button>
-    <div id="trackDisplay" class="hidden-section p-6 bg-emerald-50/80 rounded-2xl">
-      <p id="trackHeaderMessage" class="text-sm font-bold mb-4"></p>
-      <div class="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden">
-        <div id="trackBar" class="bg-[#13633d] h-full transition-all duration-1000" style="width:0%"></div>
-      </div>
-      <p class="text-2xl font-black text-[#13633d] italic uppercase" id="trackStatusText"></p>
-    </div>
-  </div>
-</section>
+<textarea id="reason" placeholder="Reason" class="w-full p-3 border rounded"></textarea>
 
-<!-- ADMIN LOGIN -->
-<section id="admin-login" class="hidden-section max-w-sm mx-auto py-12 px-4">
-  <div class="glass-panel p-8 rounded-2xl shadow-lg">
-    <h2 class="text-xl font-bold mb-4 text-center">Admin Access</h2>
-    <input id="adminEmail" type="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3">
-    <input id="adminPass" type="password" placeholder="Password" class="w-full p-3 border rounded-lg mb-4">
-    <button onclick="handleAdminLogin()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Verify</button>
-  </div>
-</section>
+<label class="font-bold">Upload Government/School ID</label>
+<input id="govtId" type="file" accept="image/*" required>
 
-<!-- ADMIN PANEL -->
-<section id="admin-panel" class="hidden-section max-w-6xl mx-auto py-12 px-4">
-  <div class="glass-panel p-6 rounded-2xl shadow-2xl">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold">Dashboard</h2>
-      <button onclick="loadAdminData()" class="bg-[#13633d] text-white px-4 py-2 rounded-lg font-bold">Refresh</button>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left bg-white/50">
-        <thead>
-          <tr class="bg-[#13633d] text-white font-bold">
-            <th class="p-4">ID</th>
-            <th class="p-4">Student</th>
-            <th class="p-4">Document</th>
-            <th class="p-4 text-center">Status</th>
-            <th class="p-4 text-center">Update</th>
-          </tr>
-        </thead>
-        <tbody id="adminTableBody" class="text-sm"></tbody>
-      </table>
-    </div>
-  </div>
-</section>
+<label class="font-bold">Selfie (Upload or Camera)</label>
+<input id="selfie" type="file" accept="image/*">
+
+<!-- CAMERA -->
+<video id="video" autoplay playsinline></video>
+<button type="button" onclick="capture()" class="w-full bg-green-700 text-white p-2 rounded mt-2">
+📷 Capture Selfie
+</button>
+
+<canvas id="canvas" class="hidden"></canvas>
+
+<button class="w-full bg-green-800 text-white p-3 rounded font-bold">
+Submit Request
+</button>
+
+</form>
+
+<p id="msg" class="text-center font-bold mt-3"></p>
+
+<hr class="my-6">
+
+<!-- TRACK -->
+<h2 class="text-xl font-bold mb-2">Track Request</h2>
+
+<input id="trackId" placeholder="BNHS-XXXXX" class="w-full p-3 border rounded mb-2 text-center">
+
+<button onclick="track()" class="w-full bg-black text-white p-3 rounded">
+Check Status
+</button>
+
+<p id="status" class="text-center font-bold mt-3"></p>
+
+</div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEol8yDm-nvykMZGieGDr9-sBXrU6NXw5dfDzIE3P4-FgALH68TRYCv3trxjBlTL6r/exec";
+const URL="https://script.google.com/macros/s/AKfycbwEol8yDm-nvykMZGieGDr9-sBXrU6NXw5dfDzIE3P4-FgALH68TRYCv3trxjBlTL6r/exec";
 
-function showSection(id){
-  document.querySelectorAll('section').forEach(s=>s.classList.add('hidden-section'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active-nav'));
-  document.getElementById(id).classList.remove('hidden-section');
-  const navBtn = document.getElementById('btn-'+id);
-  if(navBtn) navBtn.classList.add('active-nav');
+/* CAMERA START */
+const video=document.getElementById("video");
+
+navigator.mediaDevices.getUserMedia({
+video:{facingMode:"user"}
+})
+.then(stream=>{
+video.srcObject=stream;
+})
+.catch(()=>alert("Camera not allowed"));
+
+let capturedImage="";
+
+/* CAPTURE */
+function capture(){
+const canvas=document.getElementById("canvas");
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+
+const ctx=canvas.getContext("2d");
+
+/* NOT MIRRORED */
+ctx.drawImage(video,0,0);
+
+capturedImage=canvas.toDataURL("image/jpeg",0.5); // compressed
+
+alert("Selfie captured!");
 }
 
-// REQUEST FORM SUBMIT
-document.getElementById('requestForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const btn = document.getElementById('submitBtn');
-  const feedback = document.getElementById('requestFeedback');
-  btn.disabled = true; btn.innerText = "Processing...";
+/* BASE64 */
+function toBase64(file){
+return new Promise(res=>{
+let reader=new FileReader();
+reader.onload=()=>res(reader.result);
+reader.readAsDataURL(file);
+});
+}
 
-  const trackingId = "BNHS-" + Math.floor(10000+Math.random()*90000);
+/* SUBMIT */
+form.onsubmit=async(e)=>{
+e.preventDefault();
 
-  // Get files as base64
-  const govtIdFile = document.getElementById('govtId').files[0];
-  const selfieFile = document.getElementById('selfie').files[0];
+let id="BNHS-"+Math.floor(10000+Math.random()*90000);
 
-  const toBase64 = file => new Promise((resolve,reject)=>{
-    if(!file) resolve("");
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = ()=>resolve(reader.result);
-    reader.onerror = error=>reject(error);
-  });
+let govt=await toBase64(govtId.files[0]);
 
-  const govtId = await toBase64(govtIdFile);
-  const selfie = await toBase64(selfieFile);
+let selfieData="";
 
-  try {
-    await fetch(SCRIPT_URL,{
-      method:'POST',
-      body:JSON.stringify({
-        action:'submit',
-        trackingId, 
-        name:document.getElementById('name').value,
-        email:document.getElementById('email').value,
-        contact:document.getElementById('contact').value,
-        document:document.getElementById('document').value,
-        reason:document.getElementById('reason').value,
-        govtId, selfie
-      })
-    });
-    feedback.innerHTML=`<div class="bg-[#13633d] p-6 rounded-2xl text-white text-center"><p class="font-bold text-xs uppercase mb-1 tracking-widest">ID Recorded:</p><p class="text-4xl font-mono font-black my-2">${trackingId}</p></div>`;
-    document.getElementById('requestForm').reset();
-  }catch(err){ alert("Error connecting."); }
-  btn.disabled=false; btn.innerText="Submit Request";
+/* PRIORITY: CAMERA */
+if(capturedImage){
+selfieData=capturedImage;
+}else if(selfie.files[0]){
+selfieData=await toBase64(selfie.files[0]);
+}
+
+await fetch(URL,{
+method:"POST",
+mode:"no-cors",
+body:JSON.stringify({
+action:"submit",
+trackingId:id,
+name:name.value,
+email:email.value,
+contact:contact.value,
+document:document.value,
+reason:reason.value,
+govtId:govt,
+selfie:selfieData
+})
 });
 
-// TRACK SYSTEM
-async function handleTrack(){
-  const id = document.getElementById('trackId').value.trim().toUpperCase();
-  if(!id) return;
-  const btn = document.querySelector('#track button') || document.getElementById('trackBtn');
-  btn.innerText="Finding...";
-  try{
-    const res = await fetch(SCRIPT_URL,{
-      method:'POST',
-      body:JSON.stringify({action:"track", trackingId:id})
-    });
-    const data = await res.json();
-    if(data.status==="Not Found"){ alert("ID not found"); btn.innerText="Check Status"; return; }
-    document.getElementById('trackDisplay').classList.remove('hidden-section');
-    document.getElementById('trackStatusText').innerText=data.status;
-    const h = document.getElementById('trackHeaderMessage');
-    const b = document.getElementById('trackBar');
-    if(data.status==="Processing"){ h.innerText="Your document is being processed."; b.style.width="40%"; }
-    else if(data.status==="Ready for Pickup"){ h.innerText="Ready for pick-up."; b.style.width="85%"; }
-    else if(data.status==="Received"){ h.innerText="Document complete."; b.style.width="100%"; }
-    else{ h.innerText="Pending"; b.style.width="15%"; }
-  }catch(e){ alert("Error"); }
-  btn.innerText="Check Status";
+msg.innerHTML="✅ Submitted! Your Tracking ID: "+id;
+
+form.reset();
+capturedImage="";
+};
+
+/* TRACK (FIXED) */
+async function track(){
+let id=trackId.value.trim().toUpperCase();
+
+if(!id) return;
+
+try{
+let res=await fetch(URL+"?action=track&trackingId="+id);
+let data=await res.json();
+
+if(data.status==="Not Found"){
+status.innerText="❌ Not Found";
+}else{
+status.innerText="📄 Status: "+data.status;
 }
 
-// CAMERA
-const video = document.getElementById('cameraPreview');
-navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}})
-.then(stream=>{ video.srcObject=stream; })
-.catch(e=>console.log("Camera error",e));
-
-function takeSnapshot(){
-  const canvas = document.getElementById('snapshotCanvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video,0,0);
-  const dataUrl = canvas.toDataURL('image/png');
-  document.getElementById('selfie').value = ""; // optional: reset file input
-  alert("Snapshot taken! It will be submitted with the form.");
+}catch(e){
+status.innerText="⚠️ Error tracking request";
 }
-
-// ADMIN LOGIN
-async function handleAdminLogin(){
-  const email = document.getElementById('adminEmail').value.trim();
-  const pass = document.getElementById('adminPass').value.trim();
-  if(pass !== "BINHS-2026"){ alert("Wrong password"); return; }
-  showSection('admin-panel');
-  loadAdminData();
-}
-
-// LOAD ADMIN DATA
-async function loadAdminData(){
-  const body = document.getElementById('adminTableBody');
-  body.innerHTML="<tr><td colspan='5' class='p-10 text-center'>Syncing...</td></tr>";
-  try{
-    const res = await fetch(SCRIPT_URL,{method:'POST', body:JSON.stringify({action:"loadAll"})});
-    const data = await res.json();
-    body.innerHTML="";
-    data.reverse().forEach(row=>{
-      body.innerHTML+=`<tr class="border-b hover:bg-emerald-50 transition"><td class="p-4 font-mono font-bold text-xs">${row[0]}</td><td class="p-4"><b>${row[2]}</b><br><span class="text-[10px] text-gray-400">${row[3]}</span></td><td class="p-4 text-[10px] font-semibold">${row[5]}</td><td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-tighter">${row[9]}</span></td><td class="p-4 text-center"><select onchange="updateStatus('${row[0]}',this.value)" class="text-[10px] border rounded p-1 bg-white"><option value="">Select</option><option value="Processing">Processing</option><option value="Ready for Pickup">Ready for Pickup</option><option value="Received">Received</option></select></td></tr>`;
-    });
-  }catch(e){ body.innerHTML="Error loading data."; }
-}
-
-async function updateStatus(tid,newStatus){
-  if(!newStatus) return;
-  await fetch(SCRIPT_URL,{method:'POST', body:JSON.stringify({action:"update",trackingId:tid,newStatus})});
-  loadAdminData();
 }
 </script>
 
